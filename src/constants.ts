@@ -15,11 +15,11 @@ export interface Rank {
 }
 
 export const RANK_COLORS: Record<string, string> = {
-  "Wraith": "#94a3b8",   // Ghostly Silver
-  "Specter": "#10b981",  // Magic Green
-  "Revenant": "#f97316", // Burning Foot Orange
-  "Nightmare": "#8b5cf6", // Twilight Soul Purple
-  "Unseen": "#334155",    // Darkest Moon Shadow
+  "Wraith": "#64748b",   // Grey
+  "Specter": "#b45309",  // Bronze
+  "Revenant": "#ffffff", // White
+  "Nightmare": "#a855f7", // Purple
+  "Unseen": "#eab308",    // Gold
 };
 
 const RAW_DATA = [
