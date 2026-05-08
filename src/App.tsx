@@ -86,7 +86,7 @@ export default function App() {
       {/* Header */}
       <header className="h-24 flex items-center justify-between px-8 bg-[#12121e] border-b border-[#2a2a3a] shrink-0 z-10">
         <div>
-          <h1 className="text-4xl font-sans font-black tracking-wider text-[#10b981] uppercase drop-shadow-[0_0_20px_rgba(16,185,129,0.4)]">Spirit Mixer</h1>
+          <h1 className="text-4xl font-sans font-black tracking-wider text-[#10b981] uppercase drop-shadow-[0_0_20px_rgba(16,185,129,0.4)]">Hades 2 Rank Tracker</h1>
           <p className="text-[10px] uppercase tracking-[0.2em] opacity-50">Rank & Resource Progression Tracker</p>
         </div>
         
