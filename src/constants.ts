@@ -12,6 +12,7 @@ export interface Rank {
   kudos: number;
   resources: ResourceCost[];
   cumulativeKudos: number;
+  imageUrl: string;
 }
 
 export const RANK_COLORS: Record<string, string> = {
@@ -93,14 +94,16 @@ function processRanks(): Rank[] {
   let cumulativeKudos = 0;
   return RAW_DATA.map((item, index) => {
     cumulativeKudos += item.cost;
+    const name = `${item.group} ${toRoman(item.level)}`;
     return {
       id: index + 1,
-      name: `${item.group} ${toRoman(item.level)}`,
+      name,
       colorName: item.group,
       colorHex: RANK_COLORS[item.group] || "#ffffff",
       kudos: item.cost,
       resources: [],
-      cumulativeKudos
+      cumulativeKudos,
+      imageUrl: `/assets/ranks/${name.replace(/\s+/g, '_')}.png`
     };
   });
 }

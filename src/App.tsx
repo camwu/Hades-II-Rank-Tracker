@@ -86,36 +86,48 @@ export default function App() {
       {/* Header */}
       <header className="h-24 flex items-center justify-between px-8 bg-[#12121e] border-b border-[#2a2a3a] shrink-0 z-10">
         <div>
-          <h1 className="text-4xl font-sans font-black tracking-wider text-[#10b981] uppercase drop-shadow-[0_0_20px_rgba(16,185,129,0.4)]">Hades 2 Rank Tracker</h1>
-          <p className="text-[10px] uppercase tracking-[0.2em] opacity-50">Rank & Resource Progression Tracker</p>
-        </div>
-        
-        <div className="flex gap-8 items-center">
-          <div className="text-right hidden md:block">
-            <p className="text-[10px] uppercase opacity-50 tracking-wider">Current Standing</p>
-            <p className="text-lg font-sans font-bold text-white uppercase tracking-wider">{currentRank.name}</p>
-          </div>
-          <div className="flex flex-col items-end gap-1.5">
-            <div className="flex justify-between w-full items-center mb-0.5">
-              <p className="text-[10px] uppercase opacity-50 tracking-wider font-bold">Global Completion</p>
-              <p className="text-2xl font-mono font-black text-[#10b981] leading-none drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]">{progressPercentage.toFixed(1)}%</p>
-            </div>
-            <div className="w-56 h-3 bg-[#1a1a2a] rounded-full overflow-hidden border border-[#2a2a3a] shadow-inner">
-              <motion.div 
-                initial={{ width: 0 }}
-                animate={{ width: `${progressPercentage}%` }}
-                className="h-full bg-[#10b981] shadow-[0_0_10px_rgba(16,185,129,0.4)]"
-              />
-            </div>
-          </div>
+          <h1 className="text-3xl font-sans font-black tracking-wider text-[#10b981] uppercase drop-shadow-[0_0_20px_rgba(16,185,129,0.4)]">Hades 2 Rank Tracker</h1>
         </div>
       </header>
 
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <aside className="w-80 bg-[#0e0e16] border-r border-[#2a2a3a] p-8 flex flex-col gap-8 hidden lg:flex shrink-0">
+        <aside className="w-80 bg-[#0e0e16] border-r border-[#2a2a3a] p-8 flex flex-col gap-8 hidden lg:flex shrink-0 overflow-y-auto custom-scrollbar">
           <section>
-            <label className="text-[10px] uppercase tracking-widest text-[#10b981] block mb-4 font-bold">Projected Completion</label>
+            <div className="mb-6">
+              <label className="text-xs uppercase tracking-widest text-[#10b981] block mb-2 font-bold">Current Rank</label>
+              <div className="bg-[#12121e] border border-[#2a2a3a] rounded-xl p-4 flex items-center gap-4 shadow-lg">
+                <div className="w-12 h-12 bg-[#1a1a2a] rounded-lg flex items-center justify-center border border-[#2a2a3a]/50">
+                  <img 
+                    src={currentRank.imageUrl} 
+                    alt="" 
+                    className="w-8 h-8 object-contain"
+                    onError={(e) => (e.currentTarget.style.display = 'none')}
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-lg font-black text-white uppercase truncate tracking-wide">{currentRank.name}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mb-2">
+              <div className="flex justify-between items-end mb-2">
+                <label className="text-xs uppercase tracking-widest text-[#10b981] font-bold">Global Completion</label>
+                <p className="text-2xl font-mono font-black text-[#10b981] leading-none">{progressPercentage.toFixed(1)}%</p>
+              </div>
+              <div className="w-full h-4 bg-[#1a1a2a] rounded-full overflow-hidden border border-[#2a2a3a] shadow-inner p-0.5">
+                <motion.div 
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progressPercentage}%` }}
+                  className="h-full bg-[#10b981] rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]"
+                />
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <label className="text-xs uppercase tracking-widest text-[#10b981] block mb-4 font-bold">Projected Completion</label>
             <div className="space-y-4">
               <div className="bg-[#161625] p-5 rounded-lg border border-[#2a2a3a] relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-1 opacity-10 group-hover:opacity-20 transition-opacity">
@@ -141,13 +153,13 @@ export default function App() {
           </section>
 
           <section>
-            <label className="text-[10px] uppercase tracking-widest text-[#10b981] block mb-4 font-bold">Search Parameters</label>
+            <label className="text-xs uppercase tracking-widest text-[#10b981] block mb-4 font-bold">Search</label>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#10b981]/50" />
               <input 
                 id="search-input"
                 type="text" 
-                placeholder="Filter milestones..." 
+                placeholder="Search ranks..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="bg-[#161625] border border-[#2a2a3a] rounded-lg pl-10 pr-4 py-3 outline-none focus:border-[#10b981] transition-all w-full text-sm font-mono text-white"
@@ -155,22 +167,26 @@ export default function App() {
             </div>
           </section>
 
-          <section className="mt-auto">
-            <div className="p-5 bg-[#1a1a2a]/30 rounded-xl border border-dashed border-[#2a2a3a]">
-              <p className="text-[11px] italic leading-relaxed opacity-60 font-serif tracking-wide text-[#d1d1e0]">
-                "The Mixer requires tribute. Each rank forged in the darkness brings you closer to the Unseen."
-              </p>
-            </div>
-          </section>
+
         </aside>
 
         {/* Main Content */}
         <main className="flex-1 flex flex-col bg-[#0c0c12] p-6 md:p-8 overflow-hidden relative">
-          <div className="grid grid-cols-5 md:grid-cols-6 gap-4 mb-4 text-[11px] uppercase tracking-widest opacity-40 px-6 font-black py-2 bg-[#0c0c12] sticky top-0 z-10">
-            <span className="col-span-2">Rank Designation</span>
-            <span className="hidden md:block">Step Cost</span>
-            <span>Cumulative</span>
-            <span>Progress</span>
+          <div className="grid grid-cols-5 md:grid-cols-6 gap-4 mb-4 text-xs uppercase tracking-widest opacity-50 px-6 font-black py-2 bg-[#0c0c12] sticky top-0 z-10">
+            <span className="col-span-2">Rank</span>
+            <div className="hidden md:block text-right">
+              <div className="inline-flex items-center gap-1.5">
+                <img src="/assets/ui/Kudos.png" alt="" className="w-3.5 h-3.5 object-contain" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                <span>Kudos Cost</span>
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="inline-flex items-center gap-1.5">
+                <img src="/assets/ui/Kudos.png" alt="" className="w-3.5 h-3.5 object-contain" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                <span>Cumulative Kudos</span>
+              </div>
+            </div>
+            <span className="text-right">Progress</span>
             <span className="text-right">Status</span>
           </div>
 
@@ -218,15 +234,23 @@ export default function App() {
                           >
                             <div className="col-span-2 flex items-center gap-3">
                               <span className="text-[10px] opacity-30 w-8">#{rank.id.toString().padStart(3, '0')}</span>
-                              <div 
-                                className="w-1.5 h-1.5 rounded-full ring-2 ring-transparent opacity-50" 
-                                style={{ backgroundColor: rank.colorHex }}
-                              />
+                              <div className="relative w-5 h-5 flex items-center justify-center">
+                                <img 
+                                  src={rank.imageUrl} 
+                                  alt="" 
+                                  className="w-full h-full object-contain z-10"
+                                  onError={(e) => (e.currentTarget.style.display = 'none')}
+                                />
+                                <div 
+                                  className="absolute inset-0 w-1.5 h-1.5 m-auto rounded-full ring-2 ring-transparent opacity-50" 
+                                  style={{ backgroundColor: rank.colorHex }}
+                                />
+                              </div>
                               <span className="truncate">{rank.name}</span>
                             </div>
-                            <div className="hidden md:block opacity-60">{rank.kudos.toLocaleString()}</div>
-                            <div className="opacity-80">{rank.cumulativeKudos.toLocaleString()}</div>
-                            <div className="flex items-center gap-3">
+                            <div className="hidden md:block opacity-60 text-right">{rank.kudos.toLocaleString()}</div>
+                            <div className="opacity-80 text-right">{rank.cumulativeKudos.toLocaleString()}</div>
+                            <div className="flex items-center gap-3 justify-end">
                                <div className="w-20 h-1 bg-[#1a1a2a] rounded-full overflow-hidden opacity-30">
                                  <div className="h-full" style={{ width: `${progress}%`, backgroundColor: rank.colorHex }} />
                                </div>
@@ -260,15 +284,23 @@ export default function App() {
                   >
                     <div className="col-span-2 flex items-center gap-3">
                       <span className="text-[10px] opacity-30 w-8">#{rank.id.toString().padStart(3, '0')}</span>
-                      <div 
-                        className="w-1.5 h-1.5 rounded-full ring-4 ring-transparent group-hover:ring-current/10" 
-                        style={{ backgroundColor: rank.colorHex }}
-                      />
+                      <div className="relative w-8 h-8 flex items-center justify-center">
+                        <img 
+                          src={rank.imageUrl} 
+                          alt="" 
+                          className="w-full h-full object-contain z-10"
+                          onError={(e) => (e.currentTarget.style.display = 'none')}
+                        />
+                        <div 
+                          className="absolute inset-0 w-1.5 h-1.5 m-auto rounded-full ring-4 ring-transparent group-hover:ring-current/10" 
+                          style={{ backgroundColor: rank.colorHex }}
+                        />
+                      </div>
                       <span className={`${isCurrent ? 'font-bold text-[#10b981]' : ''} truncate`}>{rank.name}</span>
                     </div>
-                    <div className="hidden md:block opacity-60">{rank.kudos.toLocaleString()}</div>
-                    <div className="opacity-80">{rank.cumulativeKudos.toLocaleString()}</div>
-                    <div className="flex items-center gap-3">
+                    <div className="hidden md:block opacity-60 text-right">{rank.kudos.toLocaleString()}</div>
+                    <div className="opacity-80 text-right">{rank.cumulativeKudos.toLocaleString()}</div>
+                    <div className="flex items-center gap-3 justify-end">
                        <div className="w-20 h-2 bg-[#1a1a2a] rounded-full overflow-hidden border border-[#2a2a3a]/50">
                          <div className="h-full opacity-80" style={{ width: `${progress}%`, backgroundColor: rank.colorHex }} />
                        </div>
@@ -276,7 +308,7 @@ export default function App() {
                     </div>
                     <div className="text-right">
                       {isCurrent ? (
-                        <span className="text-[#f97316] animate-pulse text-[10px] uppercase font-bold tracking-wider underline underline-offset-4">Current</span>
+                        <span className="text-[#f97316] text-[10px] uppercase font-bold tracking-wider underline underline-offset-4">Current</span>
                       ) : (
                         <span className="opacity-20 text-[10px] uppercase tracking-wider">Incomplete</span>
                       )}
@@ -286,7 +318,7 @@ export default function App() {
               })}
               {filteredRanks.length === 0 && (
                 <div className="p-12 text-center opacity-40 text-sm italic font-serif">
-                  No records found in the Unseen records.
+                  No records found
                 </div>
               )}
             </div>
