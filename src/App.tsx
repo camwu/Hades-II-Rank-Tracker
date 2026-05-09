@@ -176,13 +176,11 @@ export default function App() {
             <span className="col-span-2">Rank</span>
             <div className="hidden md:block text-right">
               <div className="inline-flex items-center gap-1.5">
-                <img src="/assets/ui/Kudos.png" alt="" className="w-3.5 h-3.5 object-contain" onError={(e) => (e.currentTarget.style.display = 'none')} />
                 <span>Kudos Cost</span>
               </div>
             </div>
             <div className="text-right">
               <div className="inline-flex items-center gap-1.5">
-                <img src="/assets/ui/Kudos.png" alt="" className="w-3.5 h-3.5 object-contain" onError={(e) => (e.currentTarget.style.display = 'none')} />
                 <span>Cumulative Kudos</span>
               </div>
             </div>
