@@ -13,7 +13,8 @@ import {
   Info, 
   ArrowRight,
   TrendingUp,
-  Skull
+  Skull,
+  Github
 } from 'lucide-react';
 import { RANKS, TOTAL_KUDOS, Rank } from './constants';
 import { 
@@ -39,7 +40,24 @@ export default function App() {
   });
   const [searchQuery, setSearchQuery] = useState('');
   const [isHistoryExpanded, setIsHistoryExpanded] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<string>('');
   
+  useEffect(() => {
+    fetch('https://api.github.com/repos/camwu/hades-2-rank-tracker/commits/main')
+      .then(res => res.json())
+      .then(data => {
+        if (data.commit?.committer?.date) {
+          const date = new Date(data.commit.committer.date);
+          setLastUpdated(date.toLocaleDateString(undefined, { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          }));
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   useEffect(() => {
     localStorage.setItem('hades-rank-id', currentRankId.toString());
   }, [currentRankId]);
@@ -324,14 +342,23 @@ export default function App() {
         </main>
       </div>
 
-      <footer className="h-12 bg-[#080810] border-t border-[#2a2a3a] px-8 flex items-center justify-between text-[10px] uppercase tracking-widest opacity-40 shrink-0">
-        <div className="flex gap-6">
-          <span>Feed: Spirit_Mixer_v1.2</span>
-          <span className="hidden sm:inline">Milestones: {RANKS.length}</span>
+      <footer className="py-4 bg-[#080810] border-t border-[#2a2a3a] px-8 flex flex-col md:flex-row items-center justify-between text-[10px] uppercase tracking-widest opacity-60 shrink-0 gap-4">
+        <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-center">
+          <a 
+            href="https://github.com/camwu/hades-2-rank-tracker" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 hover:text-[#10b981] transition-colors"
+          >
+            <Github className="w-3.5 h-3.5" />
+            <span>GitHub Repository</span>
+          </a>
+          {lastUpdated && (
+            <span className="opacity-50">Last Updated: {lastUpdated}</span>
+          )}
         </div>
-        <div className="flex gap-4">
-          <span>Last Sacrifice: Today</span>
-          <Trophy className="w-3 h-3" />
+        <div className="text-center md:text-right opacity-40 px-4 max-w-md">
+          This is an unofficial, fan-developed project. Hades II and all related characters, assets, and intellectual property are the sole property of Supergiant Games.
         </div>
       </footer>
 
