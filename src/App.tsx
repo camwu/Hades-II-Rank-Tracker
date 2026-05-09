@@ -104,7 +104,7 @@ export default function App() {
       {/* Header */}
       <header className="h-24 flex items-center justify-between px-8 bg-[#12121e] border-b border-[#2a2a3a] shrink-0 z-10">
         <div>
-          <h1 className="text-3xl font-sans font-black tracking-wider text-[#10b981] uppercase drop-shadow-[0_0_20px_rgba(16,185,129,0.4)]">Hades 2 Rank Tracker</h1>
+          <h1 className="text-3xl font-sans font-black tracking-wider text-[#10b981] uppercase drop-shadow-[0_0_20px_rgba(16,185,129,0.4)]">Hades II Rank Tracker</h1>
         </div>
       </header>
 
@@ -358,7 +358,7 @@ export default function App() {
           )}
         </div>
         <div className="text-center md:text-right opacity-40 px-4 max-w-md">
-          This is an unofficial, fan-developed project. Hades II and all related characters, assets, and intellectual property are the sole property of Supergiant Games.
+          This is an unofficial, fan-developed project. Hades II and all related characters and assets are the sole property of Supergiant Games.
         </div>
       </footer>
 
