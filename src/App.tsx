@@ -225,7 +225,7 @@ export default function App() {
                                   <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-4 h-4 object-contain" />
                                   <div>
                                     <p className="text-sm font-mono text-white leading-none">{amount.toLocaleString()}</p>
-                                    <p className="text-[8px] uppercase opacity-40 font-sans">{resName}</p>
+                                    <p className="text-[10px] uppercase opacity-60 font-sans mt-1">{resName}</p>
                                   </div>
                                 </div>
                               );
@@ -257,7 +257,7 @@ export default function App() {
                                   <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-4 h-4 object-contain opacity-70" />
                                   <div>
                                     <p className="text-sm font-mono text-[#f97316] leading-none">{amount.toLocaleString()}</p>
-                                    <p className="text-[8px] uppercase opacity-40 font-sans">{resName}</p>
+                                    <p className="text-[10px] uppercase opacity-60 font-sans mt-1">{resName}</p>
                                   </div>
                                 </div>
                               );
@@ -411,7 +411,7 @@ export default function App() {
                                <span className="font-bold opacity-70 min-w-[40px] text-right text-sm">{progress.toFixed(1)}%</span>
                             </div>
                             <div className="text-right">
-                              <span className="text-[#10b981] text-[10px] uppercase font-bold tracking-tight opacity-40">Done</span>
+                              <span className="text-[#10b981] text-[10px] uppercase font-bold tracking-tight opacity-40">Completed</span>
                             </div>
                           </div>
                         );
