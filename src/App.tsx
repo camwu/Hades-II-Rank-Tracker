@@ -131,7 +131,7 @@ export default function App() {
   }, [currentRankId]);
 
   return (
-    <div id="app-root" className="h-screen bg-[#0c0c12] text-[#d1d1e0] font-sans selection:bg-[#a855f7]/30 selection:text-white overflow-hidden flex flex-col">
+    <div id="app-root" className="h-screen bg-[#0c0c12] text-[#d1d1e0] font-sans overflow-hidden flex flex-col">
       {/* Header */}
       <header className="h-24 flex items-center justify-between px-8 bg-[#12121e] border-b border-[#2a2a3a] shrink-0 z-10">
         <div className="flex items-center gap-6">
@@ -332,27 +332,27 @@ export default function App() {
         </motion.aside>
 
         {/* Main Content */}
-        <main className="flex-1 flex flex-col bg-[#0c0c12] p-6 md:p-8 overflow-hidden relative">
-          <div className="grid grid-cols-5 md:grid-cols-6 gap-4 mb-4 text-xs uppercase tracking-widest opacity-50 px-6 font-black py-2 bg-[#0c0c12] sticky top-0 z-10">
-            <span className="col-span-2">Rank</span>
-            <div className="hidden md:block text-right">
-              <span>Kudos Cost</span>
+        <main className="flex-1 flex flex-col bg-[#0c0c12] overflow-hidden relative">
+          <div className="flex-1 flex flex-col w-full max-w-6xl mx-auto p-6 md:p-8 overflow-hidden">
+            <div className="grid grid-cols-[repeat(13,minmax(0,1fr))] gap-4 mb-4 text-xs uppercase tracking-widest opacity-50 px-10 font-black py-2 bg-[#0c0c12] sticky top-0 z-10">
+              <span className="col-span-5 md:col-span-4">Rank</span>
+              <div className="hidden md:block md:col-span-3 text-right">
+                <span>Kudos Cost</span>
+              </div>
+              <div className="col-span-5 md:col-span-3 text-right">
+                <span>Resource</span>
+              </div>
+              <span className="col-span-3 md:col-span-3 text-right">Progress</span>
             </div>
-            <div className="text-right">
-              <span>Boss Resource</span>
-            </div>
-            <span className="text-right">Progress</span>
-            <span className="text-right">Status</span>
-          </div>
 
-          <div className="flex-1 overflow-y-auto border border-[#2a2a3a] rounded-xl bg-[#12121e] shadow-2xl">
+            <div className="flex-1 overflow-y-auto border border-[#2a2a3a] rounded-xl bg-[#12121e] shadow-2xl">
             <div className="grid grid-cols-1 divide-y divide-[#2a2a3a]">
               {/* Collapsible Completed Section - Pinned to top */}
               {completedRanks.length > 0 && (
                 <div className="sticky top-0 bg-[#12121e] border-b border-[#2a2a3a] z-20">
                   <button 
                     onClick={() => setIsHistoryExpanded(!isHistoryExpanded)}
-                    className="w-full flex items-center justify-between p-4 px-6 hover:bg-[#1a1a2a]/40 transition-colors group"
+                    className="w-full flex items-center justify-between p-4 px-10 hover:bg-[#1a1a2a]/40 transition-colors group"
                   >
                     <div className="flex items-center gap-3">
                       <History className="w-4 h-4 text-[#d1d1e0] opacity-30" />
@@ -387,10 +387,9 @@ export default function App() {
                             key={rank.id}
                             id={`rank-row-${rank.id}`}
                             onClick={() => setCurrentRankId(rank.id)}
-                            className="grid grid-cols-5 md:grid-cols-6 gap-4 py-2.5 px-6 text-sm font-mono opacity-30 italic hover:opacity-100 hover:bg-[#1a1a2a]/20 cursor-pointer transition-all items-center"
+                            className="grid grid-cols-[repeat(13,minmax(0,1fr))] gap-4 py-2.5 px-10 text-sm font-mono opacity-30 italic hover:opacity-100 hover:bg-[#1a1a2a]/20 cursor-pointer transition-all items-center"
                           >
-                            <div className="col-span-2 flex items-center gap-3">
-                              <span className="text-[10px] opacity-30 w-8">#{rank.id.toString().padStart(3, '0')}</span>
+                            <div className="col-span-5 md:col-span-4 flex items-center gap-3">
                               <div className="relative w-5 h-5 flex items-center justify-center">
                                 <img 
                                   src={rank.imageUrl} 
@@ -405,22 +404,19 @@ export default function App() {
                               </div>
                               <span className="truncate">{rank.name}</span>
                             </div>
-                            <div className="hidden md:flex items-center justify-end gap-2 opacity-80">
+                            <div className="hidden md:flex md:col-span-3 items-center justify-end gap-2 opacity-80">
                               <span className="font-mono text-sm leading-none">{rank.kudos.toLocaleString()}</span>
                               <img src="/assets/resources/Kudos.png" alt="" className="w-4 h-4 object-contain" />
                             </div>
-                            <div className="flex items-center justify-end gap-2 opacity-90">
-                              <span className="font-mono text-sm leading-none">{rank.bossResourceQty}x {rank.bossResourceName}</span>
-                              <img src={rank.bossResourceImageUrl} alt="" className="w-5 h-5 object-contain" />
-                            </div>
-                            <div className="flex items-center gap-3 justify-end">
+                            <div className="col-span-5 md:col-span-3 flex items-center justify-end gap-3 opacity-90 min-w-0">
+                               <span className="font-mono text-sm leading-tight text-right">{rank.bossResourceQty}x {rank.bossResourceName}</span>
+                               <img src={rank.bossResourceImageUrl} alt="" className="w-5 h-5 object-contain flex-shrink-0" />
+                             </div>
+                            <div className="col-span-3 md:col-span-3 flex items-center gap-3 justify-end">
                                <div className="w-20 h-1 bg-[#1a1a2a] rounded-full overflow-hidden opacity-30">
                                  <div className="h-full" style={{ width: `${progress}%`, backgroundColor: '#10b981' }} />
                                </div>
                                <span className="font-bold opacity-70 min-w-[40px] text-right text-sm">{progress.toFixed(1)}%</span>
-                            </div>
-                            <div className="text-right">
-                              <span className="text-[#10b981] text-[10px] uppercase font-bold tracking-tight opacity-40">Completed</span>
                             </div>
                           </div>
                         );
@@ -441,12 +437,11 @@ export default function App() {
                     id={`rank-row-${rank.id}`}
                     onClick={() => setCurrentRankId(rank.id)}
                     className={`
-                      grid grid-cols-5 md:grid-cols-6 gap-4 font-mono transition-all cursor-pointer group items-center
-                      ${isCurrent ? 'bg-[#1a1a2a] border-l-4 border-[#10b981] text-white shadow-[inset_4px_0_15px_rgba(16,185,129,0.1)] py-5 px-6 text-sm' : 'bg-transparent py-3 px-6 text-sm text-[#d1d1e0]/80 border-l border-transparent hover:bg-[#1a1a2a]/40'}
+                      grid grid-cols-[repeat(13,minmax(0,1fr))] gap-4 font-mono transition-all cursor-pointer group items-center
+                      ${isCurrent ? 'bg-[#1a1a2a] border-l-4 border-[#10b981] text-white shadow-[inset_4px_0_15_rgba(16,185,129,0.1)] py-5 px-10 text-sm' : 'bg-transparent py-3 px-10 text-sm text-[#d1d1e0]/80 border-l border-transparent hover:bg-[#1a1a2a]/40'}
                     `}
                   >
-                    <div className="col-span-2 flex items-center gap-3">
-                      <span className="text-[10px] opacity-30 w-8">#{rank.id.toString().padStart(3, '0')}</span>
+                    <div className="col-span-5 md:col-span-4 flex items-center gap-3">
                       <div className="relative w-8 h-8 flex items-center justify-center">
                         <img 
                           src={rank.imageUrl} 
@@ -461,26 +456,19 @@ export default function App() {
                       </div>
                       <span className={`${isCurrent ? 'font-bold text-[#10b981]' : ''} truncate`}>{rank.name}</span>
                     </div>
-                    <div className="hidden md:flex items-center justify-end gap-2 opacity-90">
+                    <div className="hidden md:flex md:col-span-3 items-center justify-end gap-2 opacity-90">
                       <span className="font-mono text-sm leading-none">{rank.kudos.toLocaleString()}</span>
                       <img src="/assets/resources/Kudos.png" alt="" className="w-4 h-4 object-contain" />
                     </div>
-                    <div className="flex items-center justify-end gap-2 opacity-100">
-                      <span className="font-mono text-sm leading-none group-hover:text-white transition-colors">{rank.bossResourceQty}x {rank.bossResourceName}</span>
-                      <img src={rank.bossResourceImageUrl} alt="" className={`${isCurrent ? 'w-6 h-6' : 'w-5 h-5'} object-contain`} />
+                    <div className="col-span-5 md:col-span-3 flex items-center justify-end gap-3 opacity-100 min-w-0">
+                      <span className="font-mono text-sm leading-tight group-hover:text-white transition-colors text-right">{rank.bossResourceQty}x {rank.bossResourceName}</span>
+                      <img src={rank.bossResourceImageUrl} alt="" className={`${isCurrent ? 'w-6 h-6' : 'w-5 h-5'} object-contain flex-shrink-0`} />
                     </div>
-                    <div className="flex items-center gap-3 justify-end">
+                    <div className="col-span-3 md:col-span-3 flex items-center gap-3 justify-end">
                        <div className="w-20 h-2 bg-[#1a1a2a] rounded-full overflow-hidden border border-[#2a2a3a]/50">
                          <div className="h-full opacity-80" style={{ width: `${progress}%`, backgroundColor: '#10b981' }} />
                        </div>
                        <span className="font-bold opacity-70 min-w-[40px] text-right text-sm">{progress.toFixed(1)}%</span>
-                    </div>
-                    <div className="text-right">
-                      {isCurrent ? (
-                        <span className="text-[#f97316] text-[10px] uppercase font-bold tracking-wider underline underline-offset-4">Current</span>
-                      ) : (
-                        <span className="opacity-20 text-[10px] uppercase tracking-wider">Incomplete</span>
-                      )}
                     </div>
                   </div>
                 );
@@ -491,6 +479,7 @@ export default function App() {
                   No records found
                 </div>
               )}
+            </div>
             </div>
           </div>
         </main>
@@ -511,8 +500,9 @@ export default function App() {
             <span className="opacity-50">Last Updated: {lastUpdated}</span>
           )}
         </div>
-        <div className="text-center md:text-right opacity-40 px-4 max-w-md">
-          This is an unofficial, fan-developed project. Hades II and all related characters and assets are the sole property of Supergiant Games.
+        <div className="text-center md:text-right opacity-40 px-4 leading-relaxed">
+          <p>Hades II Rank Tracker is an unofficial, fan-developed project.</p>
+          <p>Hades II and all related characters and assets are the sole property of Supergiant Games.</p>
         </div>
       </footer>
     </div>
