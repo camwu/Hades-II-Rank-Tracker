@@ -8,7 +8,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Trophy, 
   Search, 
-  ChevronRight, 
   Target, 
   Info, 
   ArrowRight,
@@ -17,7 +16,9 @@ import {
   Github,
   X,
   PanelLeftClose,
-  PanelLeftOpen
+  PanelLeftOpen,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { RANKS, TOTAL_KUDOS, Rank, RESOURCE_ORDER } from './constants';
 import { 
@@ -129,18 +130,16 @@ export default function App() {
           animate={{ width: isSidebarCollapsed ? 64 : 320 }}
           className="bg-[#0e0e16] border-r border-[#2a2a3a] flex flex-col hidden lg:flex shrink-0 relative z-20"
         >
-          {/* Toggle Button Inside Sidebar Header */}
-          <div className={`p-4 flex ${isSidebarCollapsed ? 'justify-center' : 'justify-end'} border-b border-[#2a2a3a]/50 bg-[#0e0e16]`}>
-            <button 
-              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-              className="p-2 hover:bg-[#1a1a2a] rounded-lg transition-colors text-[#10b981]"
-              title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
-            >
-              {isSidebarCollapsed ? <PanelLeftOpen className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
-            </button>
-          </div>
+          {/* Toggle Button Integrated into Divider */}
+          <button 
+            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            className="absolute -right-3 top-8 z-30 flex items-center justify-center w-6 h-6 bg-[#0e0e16] border border-[#2a2a3a] rounded-md shadow-lg hover:border-[#10b981]/50 transition-all text-[#10b981]/60 hover:text-[#10b981]"
+            title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+          >
+            {isSidebarCollapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
+          </button>
 
-          <div className={`flex-1 flex flex-col gap-8 overflow-y-auto custom-scrollbar p-8 ${isSidebarCollapsed ? 'items-center overflow-x-hidden' : ''}`}>
+          <div className={`flex-1 flex flex-col gap-6 overflow-y-auto custom-scrollbar p-8 ${isSidebarCollapsed ? 'items-center overflow-x-hidden' : ''}`}>
             {!isSidebarCollapsed ? (
               <>
                 <section>
