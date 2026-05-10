@@ -505,7 +505,7 @@ export default function App() {
           )}
         </div>
         <div className="text-center md:text-right opacity-40 px-4 leading-relaxed">
-          <p>Hades II Rank Tracker is an unofficial, fan-developed project.</p>
+          <p>Hades II Rank Tracker is an unofficial, fan-developed project that is not affiliated with or endorsed by Supergiant Games.</p>
           <p>Hades II and all related characters and assets are the sole property of Supergiant Games.</p>
         </div>
       </footer>
