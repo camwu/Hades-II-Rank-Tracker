@@ -11,6 +11,9 @@ export interface Rank {
   colorHex: string;
   kudos: number;
   resources: ResourceCost[];
+  bossResourceName: string;
+  bossResourceQty: number;
+  bossResourceImageUrl: string;
   cumulativeKudos: number;
   imageUrl: string;
 }
@@ -21,6 +24,27 @@ export const RANK_COLORS: Record<string, string> = {
   "Revenant": "#ffffff", // White
   "Nightmare": "#a855f7", // Purple
   "Unseen": "#eab308",    // Gold
+};
+
+const LEVEL_RESOURCES: Record<number, string> = {
+  10: "Feather",
+  9: "Golden Apple",
+  8: "Pearl",
+  7: "Wool",
+  6: "Moon Dust",
+  5: "Cinder",
+  4: "Tears",
+  3: "Nightmare",
+  2: "Void Lens",
+  1: "Zodiac Sand"
+};
+
+const GROUP_QUANTITY: Record<string, number> = {
+  "Wraith": 1,
+  "Specter": 2,
+  "Revenant": 3,
+  "Nightmare": 4,
+  "Unseen": 5
 };
 
 const RAW_DATA = [
@@ -95,6 +119,9 @@ function processRanks(): Rank[] {
   return RAW_DATA.map((item, index) => {
     cumulativeKudos += item.cost;
     const name = `${item.group} ${toRoman(item.level)}`;
+    const resourceQty = GROUP_QUANTITY[item.group] || 1;
+    const resourceName = LEVEL_RESOURCES[item.level] || "N/A";
+    
     return {
       id: index + 1,
       name,
@@ -102,6 +129,9 @@ function processRanks(): Rank[] {
       colorHex: RANK_COLORS[item.group] || "#ffffff",
       kudos: item.cost,
       resources: [],
+      bossResourceName: resourceName,
+      bossResourceQty: resourceQty,
+      bossResourceImageUrl: `/assets/resources/${resourceName.replace(/\s+/g, '_')}.png`,
       cumulativeKudos,
       imageUrl: `/assets/ranks/${name.replace(/\s+/g, '_')}.png`
     };

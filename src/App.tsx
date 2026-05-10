@@ -153,7 +153,7 @@ export default function App() {
                 </div>
                 <div className="flex items-center gap-2 mb-1">
                   <Target className="w-3 h-3 text-[#10b981]" />
-                  <p className="text-[10px] uppercase opacity-60 tracking-wider">Spent Kudos</p>
+                  <p className="text-[10px] uppercase opacity-60 tracking-wider">Kudos Spent</p>
                 </div>
                 <p className="text-2xl font-mono text-white">{currentRank.cumulativeKudos.toLocaleString()}</p>
               </div>
@@ -163,7 +163,7 @@ export default function App() {
                 </div>
                 <div className="flex items-center gap-2 mb-1">
                   <TrendingUp className="w-3 h-3 text-[#f97316]" />
-                  <p className="text-[10px] uppercase opacity-60 tracking-wider">Remaining</p>
+                  <p className="text-[10px] uppercase opacity-60 tracking-wider">Kudos Remaining</p>
                 </div>
                 <p className="text-2xl font-mono text-[#f97316]">{remainingKudos.toLocaleString()}</p>
               </div>
@@ -193,14 +193,10 @@ export default function App() {
           <div className="grid grid-cols-5 md:grid-cols-6 gap-4 mb-4 text-xs uppercase tracking-widest opacity-50 px-6 font-black py-2 bg-[#0c0c12] sticky top-0 z-10">
             <span className="col-span-2">Rank</span>
             <div className="hidden md:block text-right">
-              <div className="inline-flex items-center gap-1.5">
-                <span>Kudos Cost</span>
-              </div>
+              <span>Kudos Cost</span>
             </div>
             <div className="text-right">
-              <div className="inline-flex items-center gap-1.5">
-                <span>Cumulative Kudos</span>
-              </div>
+              <span>Boss Resource</span>
             </div>
             <span className="text-right">Progress</span>
             <span className="text-right">Status</span>
@@ -246,7 +242,7 @@ export default function App() {
                             key={rank.id}
                             id={`rank-row-${rank.id}`}
                             onClick={() => setCurrentRankId(rank.id)}
-                            className="grid grid-cols-5 md:grid-cols-6 gap-4 py-4 px-6 text-[13px] font-mono opacity-30 italic hover:opacity-100 hover:bg-[#1a1a2a]/20 cursor-pointer transition-all items-center border-l border-transparent"
+                            className="grid grid-cols-5 md:grid-cols-6 gap-4 py-4 px-6 text-sm font-mono opacity-30 italic hover:opacity-100 hover:bg-[#1a1a2a]/20 cursor-pointer transition-all items-center border-l border-transparent"
                           >
                             <div className="col-span-2 flex items-center gap-3">
                               <span className="text-[10px] opacity-30 w-8">#{rank.id.toString().padStart(3, '0')}</span>
@@ -264,13 +260,19 @@ export default function App() {
                               </div>
                               <span className="truncate">{rank.name}</span>
                             </div>
-                            <div className="hidden md:block opacity-60 text-right">{rank.kudos.toLocaleString()}</div>
-                            <div className="opacity-80 text-right">{rank.cumulativeKudos.toLocaleString()}</div>
+                            <div className="hidden md:flex opacity-80 items-center justify-end gap-1.5">
+                              <span>{rank.kudos.toLocaleString()}</span>
+                              <img src="/assets/resources/Kudos.png" alt="" className="w-3.5 h-3.5 object-contain" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                            </div>
+                            <div className="opacity-80 text-right text-sm font-bold flex items-center justify-end gap-2">
+                              <span>{rank.bossResourceQty}x {rank.bossResourceName}</span>
+                              <img src={rank.bossResourceImageUrl} alt="" className="w-5 h-5 object-contain" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                            </div>
                             <div className="flex items-center gap-3 justify-end">
                                <div className="w-20 h-1 bg-[#1a1a2a] rounded-full overflow-hidden opacity-30">
-                                 <div className="h-full" style={{ width: `${progress}%`, backgroundColor: rank.colorHex }} />
+                                 <div className="h-full" style={{ width: `${progress}%`, backgroundColor: '#10b981' }} />
                                </div>
-                               <span className="font-bold opacity-70 min-w-[40px] text-right text-[11px]">{progress.toFixed(1)}%</span>
+                               <span className="font-bold opacity-70 min-w-[40px] text-right text-sm">{progress.toFixed(1)}%</span>
                             </div>
                             <div className="text-right">
                               <span className="text-[#10b981] text-[10px] uppercase font-bold tracking-tight opacity-40">Done</span>
@@ -295,7 +297,7 @@ export default function App() {
                     onClick={() => setCurrentRankId(rank.id)}
                     className={`
                       grid grid-cols-5 md:grid-cols-6 gap-4 font-mono transition-all cursor-pointer group items-center
-                      ${isCurrent ? 'bg-[#1a1a2a] border-l-4 border-[#10b981] text-white shadow-[inset_4px_0_15px_rgba(16,185,129,0.1)] py-8 px-6 text-sm' : 'bg-transparent py-5 px-6 text-[13px] text-[#d1d1e0]/80 border-l border-transparent hover:bg-[#1a1a2a]/40'}
+                      ${isCurrent ? 'bg-[#1a1a2a] border-l-4 border-[#10b981] text-white shadow-[inset_4px_0_15px_rgba(16,185,129,0.1)] py-8 px-6 text-sm' : 'bg-transparent py-5 px-6 text-sm text-[#d1d1e0]/80 border-l border-transparent hover:bg-[#1a1a2a]/40'}
                     `}
                   >
                     <div className="col-span-2 flex items-center gap-3">
@@ -314,13 +316,19 @@ export default function App() {
                       </div>
                       <span className={`${isCurrent ? 'font-bold text-[#10b981]' : ''} truncate`}>{rank.name}</span>
                     </div>
-                    <div className="hidden md:block opacity-60 text-right">{rank.kudos.toLocaleString()}</div>
-                    <div className="opacity-80 text-right">{rank.cumulativeKudos.toLocaleString()}</div>
+                    <div className="hidden md:flex opacity-80 items-center justify-end gap-1.5">
+                      <span>{rank.kudos.toLocaleString()}</span>
+                      <img src="/assets/resources/Kudos.png" alt="" className={`${isCurrent ? 'w-4 h-4' : 'w-3.5 h-3.5'} object-contain`} onError={(e) => (e.currentTarget.style.display = 'none')} />
+                    </div>
+                    <div className="opacity-80 text-right text-sm font-bold flex items-center justify-end gap-2">
+                      <span>{rank.bossResourceQty}x {rank.bossResourceName}</span>
+                      <img src={rank.bossResourceImageUrl} alt="" className={`${isCurrent ? 'w-6 h-6' : 'w-5 h-5'} object-contain`} onError={(e) => (e.currentTarget.style.display = 'none')} />
+                    </div>
                     <div className="flex items-center gap-3 justify-end">
                        <div className="w-20 h-2 bg-[#1a1a2a] rounded-full overflow-hidden border border-[#2a2a3a]/50">
-                         <div className="h-full opacity-80" style={{ width: `${progress}%`, backgroundColor: rank.colorHex }} />
+                         <div className="h-full opacity-80" style={{ width: `${progress}%`, backgroundColor: '#10b981' }} />
                        </div>
-                       <span className="font-bold opacity-70 min-w-[40px] text-right text-[11px]">{progress.toFixed(1)}%</span>
+                       <span className="font-bold opacity-70 min-w-[40px] text-right text-sm">{progress.toFixed(1)}%</span>
                     </div>
                     <div className="text-right">
                       {isCurrent ? (
