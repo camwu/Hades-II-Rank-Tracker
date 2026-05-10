@@ -400,7 +400,7 @@ export default function App() {
             <div className="grid grid-cols-1 divide-y divide-[#2a2a3a]">
               {/* Collapsible Completed Section - Pinned to top */}
               {completedRanks.length > 0 && (
-                <div className="sticky top-0 bg-[#12121e] border-b border-[#2a2a3a] shadow-[0_10px_30px_rgba(0,0,0,0.5)] z-20">
+                <div className="sticky top-0 bg-[#12121e] border-b border-[#2a2a3a] z-20">
                   <button 
                     onClick={() => setIsHistoryExpanded(!isHistoryExpanded)}
                     className="w-full flex items-center justify-between p-4 px-6 hover:bg-[#1a1a2a]/40 transition-colors group"
@@ -437,7 +437,7 @@ export default function App() {
                             key={rank.id}
                             id={`rank-row-${rank.id}`}
                             onClick={() => setCurrentRankId(rank.id)}
-                            className="grid grid-cols-5 md:grid-cols-6 gap-4 py-4 px-6 text-sm font-mono opacity-30 italic hover:opacity-100 hover:bg-[#1a1a2a]/20 cursor-pointer transition-all items-center"
+                            className="grid grid-cols-5 md:grid-cols-6 gap-4 py-2.5 px-6 text-sm font-mono opacity-30 italic hover:opacity-100 hover:bg-[#1a1a2a]/20 cursor-pointer transition-all items-center"
                           >
                             <div className="col-span-2 flex items-center gap-3">
                               <span className="text-[10px] opacity-30 w-8">#{rank.id.toString().padStart(3, '0')}</span>
@@ -492,7 +492,7 @@ export default function App() {
                     onClick={() => setCurrentRankId(rank.id)}
                     className={`
                       grid grid-cols-5 md:grid-cols-6 gap-4 font-mono transition-all cursor-pointer group items-center
-                      ${isCurrent ? 'bg-[#1a1a2a] border-l-4 border-[#10b981] text-white shadow-[inset_4px_0_15px_rgba(16,185,129,0.1)] py-8 px-6 text-sm' : 'bg-transparent py-5 px-6 text-sm text-[#d1d1e0]/80 border-l border-transparent hover:bg-[#1a1a2a]/40'}
+                      ${isCurrent ? 'bg-[#1a1a2a] border-l-4 border-[#10b981] text-white shadow-[inset_4px_0_15px_rgba(16,185,129,0.1)] py-5 px-6 text-sm' : 'bg-transparent py-3 px-6 text-sm text-[#d1d1e0]/80 border-l border-transparent hover:bg-[#1a1a2a]/40'}
                     `}
                   >
                     <div className="col-span-2 flex items-center gap-3">
