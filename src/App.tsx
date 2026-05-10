@@ -134,7 +134,7 @@ export default function App() {
     <div id="app-root" className="h-screen bg-[#06060a] text-[#d1d1e0] font-sans overflow-hidden flex flex-col">
       {/* Header */}
       <header className="h-24 bg-[#0c0c14] border-b border-[#1a1a25] shrink-0 z-10 px-4">
-        <div className="max-w-7xl mx-auto w-full h-full flex items-center justify-between px-6 md:px-8">
+        <div className="max-w-[1440px] mx-auto w-full h-full flex items-center justify-between px-6 md:px-8">
           <div className="flex items-center gap-6">
             <img src="/favicon.png" alt="" className="w-10 h-10 object-contain drop-shadow-[0_0_15px_rgba(16,185,129,0.4)]" />
             <h1 className="text-2xl md:text-3xl font-sans font-black tracking-wider text-[#10b981] uppercase truncate">Hades II Rank Tracker</h1>
@@ -173,7 +173,7 @@ export default function App() {
       </header>
 
       <div className="flex flex-1 overflow-hidden justify-center bg-[#06060a]">
-        <div className="flex-1 flex w-full max-w-7xl overflow-hidden relative border-x border-[#1a1a25] shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+        <div className="flex-1 flex w-full max-w-[1440px] overflow-hidden relative border-x border-[#1a1a25] shadow-[0_0_50px_rgba(0,0,0,0.5)]">
           {/* Sidebar */}
           <motion.aside 
             initial={false}
@@ -183,13 +183,13 @@ export default function App() {
             {/* Toggle Button Integrated into Divider */}
             <button 
               onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-              className="absolute -right-3 top-8 z-30 flex items-center justify-center w-6 h-6 bg-[#0c0c14] border border-[#1a1a25] rounded-md shadow-lg hover:border-[#10b981]/50 transition-all text-[#10b981]/60 hover:text-[#10b981]"
+              className="absolute -right-3 top-[21px] z-30 flex items-center justify-center w-6 h-6 bg-[#0c0c14] border border-[#1a1a25] rounded-md shadow-lg hover:border-[#10b981]/50 transition-all text-[#10b981]/60 hover:text-[#10b981]"
               title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
             >
               {isSidebarCollapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
             </button>
 
-            <div className={`flex-1 flex flex-col gap-6 overflow-y-auto p-8 ${isSidebarCollapsed ? 'items-center overflow-x-hidden' : ''}`}>
+            <div className={`flex-1 flex flex-col gap-6 overflow-y-auto px-8 pb-8 pt-6 ${isSidebarCollapsed ? 'items-center overflow-x-hidden' : ''}`}>
               {!isSidebarCollapsed ? (
                 <>
                   <section>
@@ -206,7 +206,7 @@ export default function App() {
                         />
                       </div>
 
-                      <div className="space-y-4">
+                      <div className="space-y-6">
                         <div className="bg-[#161625] rounded-lg border border-[#2a2a3a] relative overflow-hidden group">
 
                           <button 
@@ -336,7 +336,7 @@ export default function App() {
 
           {/* Main Content */}
           <main className="flex-1 flex flex-col bg-[#08080c] overflow-hidden relative">
-            <div className="flex-1 flex flex-col w-full p-6 md:p-8 overflow-hidden">
+            <div className="flex-1 flex flex-col w-full px-6 md:px-8 pb-6 md:pb-8 pt-4 overflow-hidden">
               <div className="grid grid-cols-[repeat(13,minmax(0,1fr))] gap-4 mb-4 text-xs uppercase tracking-widest opacity-50 px-10 font-black py-2 bg-[#08080c] sticky top-0 z-10">
               <span className="col-span-5 md:col-span-4">Rank</span>
               <div className="hidden md:block md:col-span-3 text-right">
@@ -405,7 +405,7 @@ export default function App() {
                                   style={{ backgroundColor: rank.colorHex }}
                                 />
                               </div>
-                              <span className="truncate">{rank.name}</span>
+                              <span className="text-base truncate">{rank.name}</span>
                             </div>
                             <div className="hidden md:flex md:col-span-3 items-center justify-end gap-2 opacity-80">
                               <span className="text-sm leading-none">{rank.kudos.toLocaleString()}</span>
@@ -457,7 +457,7 @@ export default function App() {
                           style={{ backgroundColor: rank.colorHex }}
                         />
                       </div>
-                      <span className={`${isCurrent ? 'font-bold text-[#10b981]' : ''} truncate`}>{rank.name}</span>
+                      <span className={`text-base ${isCurrent ? 'font-bold text-[#10b981]' : ''} truncate`}>{rank.name}</span>
                     </div>
                     <div className="hidden md:flex md:col-span-3 items-center justify-end gap-2 opacity-90">
                       <span className="text-sm leading-none">{rank.kudos.toLocaleString()}</span>
