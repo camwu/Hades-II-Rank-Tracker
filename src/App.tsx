@@ -14,9 +14,12 @@ import {
   ArrowRight,
   TrendingUp,
   Skull,
-  Github
+  Github,
+  X,
+  PanelLeftClose,
+  PanelLeftOpen
 } from 'lucide-react';
-import { RANKS, TOTAL_KUDOS, Rank } from './constants';
+import { RANKS, TOTAL_KUDOS, Rank, RESOURCE_ORDER } from './constants';
 import { 
   PieChart, 
   Pie, 
@@ -39,6 +42,7 @@ export default function App() {
     return 1;
   });
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isHistoryExpanded, setIsHistoryExpanded] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string>('');
   
@@ -66,6 +70,15 @@ export default function App() {
     RANKS.find((r) => r.id === currentRankId) || RANKS[0], 
   [currentRankId]);
 
+  const totalResources = useMemo(() => RANKS[RANKS.length - 1].cumulativeResources, []);
+
+  const remainingResources = useMemo(() => {
+    return totalResources.map(total => {
+      const spent = currentRank.cumulativeResources.find(s => s.name === total.name)?.amount || 0;
+      return { name: total.name, amount: total.amount - spent };
+    }).filter(r => r.amount > 0);
+  }, [currentRank, totalResources]);
+
   const progressPercentage = useMemo(() => 
     (currentRank.cumulativeKudos / TOTAL_KUDOS) * 100, 
   [currentRank]);
@@ -75,7 +88,8 @@ export default function App() {
   const filteredRanks = useMemo(() => 
     RANKS.filter((r) => 
       r.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      r.colorName.toLowerCase().includes(searchQuery.toLowerCase())
+      r.colorName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      r.bossResourceName.toLowerCase().includes(searchQuery.toLowerCase())
     ), 
   [searchQuery]);
 
@@ -110,83 +124,162 @@ export default function App() {
 
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <aside className="w-80 bg-[#0e0e16] border-r border-[#2a2a3a] p-8 flex flex-col gap-8 hidden lg:flex shrink-0 overflow-y-auto custom-scrollbar">
-          <section>
-            <div className="mb-6">
-              <label className="text-xs uppercase tracking-widest text-[#10b981] block mb-2 font-bold">Current Rank</label>
-              <div className="bg-[#12121e] border border-[#2a2a3a] rounded-xl p-4 flex items-center gap-4 shadow-lg">
-                <div className="w-12 h-12 bg-[#1a1a2a] rounded-lg flex items-center justify-center border border-[#2a2a3a]/50">
-                  <img 
-                    src={currentRank.imageUrl} 
-                    alt="" 
-                    className="w-8 h-8 object-contain"
-                    onError={(e) => (e.currentTarget.style.display = 'none')}
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-lg font-black text-white uppercase truncate tracking-wide">{currentRank.name}</p>
-                </div>
-              </div>
-            </div>
+        <motion.aside 
+          initial={false}
+          animate={{ width: isSidebarCollapsed ? 64 : 320 }}
+          className="bg-[#0e0e16] border-r border-[#2a2a3a] flex flex-col hidden lg:flex shrink-0 relative z-20"
+        >
+          {/* Toggle Button Inside Sidebar Header */}
+          <div className={`p-4 flex ${isSidebarCollapsed ? 'justify-center' : 'justify-end'} border-b border-[#2a2a3a]/50 bg-[#0e0e16]`}>
+            <button 
+              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+              className="p-2 hover:bg-[#1a1a2a] rounded-lg transition-colors text-[#10b981]"
+              title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+            >
+              {isSidebarCollapsed ? <PanelLeftOpen className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
+            </button>
+          </div>
 
-            <div className="mb-2">
-              <div className="flex justify-between items-end mb-2">
-                <label className="text-xs uppercase tracking-widest text-[#10b981] font-bold">Global Completion</label>
-                <p className="text-2xl font-mono font-black text-[#10b981] leading-none">{progressPercentage.toFixed(1)}%</p>
-              </div>
-              <div className="w-full h-4 bg-[#1a1a2a] rounded-full overflow-hidden border border-[#2a2a3a] shadow-inner p-0.5">
-                <motion.div 
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progressPercentage}%` }}
-                  className="h-full bg-[#10b981] rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]"
-                />
-              </div>
-            </div>
-          </section>
+          <div className={`flex-1 flex flex-col gap-8 overflow-y-auto custom-scrollbar p-8 ${isSidebarCollapsed ? 'items-center overflow-x-hidden' : ''}`}>
+            {!isSidebarCollapsed ? (
+              <>
+                <section>
+                  <div className="mb-6 font-sans">
+                    <label className="text-xs uppercase tracking-widest text-[#10b981] block mb-2 font-bold">Current Rank</label>
+                    <div className="bg-[#12121e] border border-[#2a2a3a] rounded-xl p-4 flex items-center gap-4 shadow-lg">
+                      <div className="w-12 h-12 bg-[#1a1a2a] rounded-lg flex items-center justify-center border border-[#2a2a3a]/50">
+                        <img 
+                          src={currentRank.imageUrl} 
+                          alt="" 
+                          className="w-8 h-8 object-contain"
+                          onError={(e) => (e.currentTarget.style.display = 'none')}
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-lg font-black text-white uppercase truncate tracking-wide">{currentRank.name}</p>
+                      </div>
+                    </div>
+                  </div>
 
-          <section>
-            <label className="text-xs uppercase tracking-widest text-[#10b981] block mb-4 font-bold">Projected Completion</label>
-            <div className="space-y-4">
-              <div className="bg-[#161625] p-5 rounded-lg border border-[#2a2a3a] relative overflow-hidden group">
-                <div className="absolute top-0 right-0 p-1 opacity-10 group-hover:opacity-20 transition-opacity">
-                  <Target className="w-12 h-12" />
-                </div>
-                <div className="flex items-center gap-2 mb-1">
-                  <Target className="w-3 h-3 text-[#10b981]" />
-                  <p className="text-[10px] uppercase opacity-60 tracking-wider">Kudos Spent</p>
-                </div>
-                <p className="text-2xl font-mono text-white">{currentRank.cumulativeKudos.toLocaleString()}</p>
+                  <div className="mb-2">
+                    <div className="flex justify-between items-end mb-2">
+                      <label className="text-xs uppercase tracking-widest text-[#10b981] font-bold">Global Completion</label>
+                      <p className="text-2xl font-mono font-black text-[#10b981] leading-none">{progressPercentage.toFixed(1)}%</p>
+                    </div>
+                    <div className="w-full h-4 bg-[#1a1a2a] rounded-full overflow-hidden border border-[#2a2a3a] shadow-inner p-0.5 mb-6">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: `${progressPercentage}%` }}
+                        className="h-full bg-[#10b981] rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]"
+                      />
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="bg-[#161625] p-5 rounded-lg border border-[#2a2a3a] relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-1 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
+                          <Target className="w-16 h-16" />
+                        </div>
+                        <div className="flex items-center gap-2 mb-3">
+                          <Target className="w-3 h-3 text-[#10b981]" />
+                          <p className="text-[10px] uppercase opacity-60 tracking-wider font-sans">Resources Spent</p>
+                        </div>
+                        <div className="grid grid-cols-2 gap-y-3 gap-x-4">
+                          {RESOURCE_ORDER.map((row, rowIdx) => 
+                            row.map((resName, colIdx) => {
+                              if (!resName) return <div key={`spent-empty-${rowIdx}-${colIdx}`} />;
+                              const amount = resName === "Kudos" 
+                                ? currentRank.cumulativeKudos 
+                                : currentRank.cumulativeResources.find(r => r.name === resName)?.amount || 0;
+                              
+                              return (
+                                <div key={`spent-${resName}`} className="flex items-center gap-2">
+                                  <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-4 h-4 object-contain" />
+                                  <div>
+                                    <p className="text-sm font-mono text-white leading-none">{amount.toLocaleString()}</p>
+                                    <p className="text-[8px] uppercase opacity-40 font-sans">{resName}</p>
+                                  </div>
+                                </div>
+                              );
+                            })
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="bg-[#161625] p-5 rounded-lg border border-[#2a2a3a] relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-1 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
+                          <TrendingUp className="w-16 h-16" />
+                        </div>
+                        <div className="flex items-center gap-2 mb-3">
+                          <TrendingUp className="w-3 h-3 text-[#f97316]" />
+                          <p className="text-[10px] uppercase opacity-60 tracking-wider font-sans">Resources Remaining</p>
+                        </div>
+                        <div className="grid grid-cols-2 gap-y-3 gap-x-4">
+                          {RESOURCE_ORDER.map((row, rowIdx) => 
+                            row.map((resName, colIdx) => {
+                              if (!resName) return <div key={`rem-empty-${rowIdx}-${colIdx}`} />;
+                              const amount = resName === "Kudos" 
+                                ? remainingKudos 
+                                : totalResources.find(r => r.name === resName)?.amount 
+                                  ? (totalResources.find(r => r.name === resName)!.amount - (currentRank.cumulativeResources.find(r => r.name === resName)?.amount || 0))
+                                  : 0;
+                              
+                              return (
+                                <div key={`rem-${resName}`} className="flex items-center gap-2">
+                                  <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-4 h-4 object-contain opacity-70" />
+                                  <div>
+                                    <p className="text-sm font-mono text-[#f97316] leading-none">{amount.toLocaleString()}</p>
+                                    <p className="text-[8px] uppercase opacity-40 font-sans">{resName}</p>
+                                  </div>
+                                </div>
+                              );
+                            })
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section>
+                  <label className="text-xs uppercase tracking-widest text-[#10b981] block mb-4 font-bold">Search</label>
+                  <div className="relative group">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#10b981]/50" />
+                    <input 
+                      id="search-input"
+                      type="text" 
+                      placeholder="Search ranks..." 
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="bg-[#161625] border border-[#2a2a3a] rounded-lg pl-10 pr-10 py-3 outline-none focus:border-[#10b981] transition-all w-full text-sm font-mono text-white"
+                    />
+                    <AnimatePresence>
+                      {searchQuery && (
+                        <motion.button
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                          onClick={() => {
+                            setSearchQuery('');
+                            document.getElementById('search-input')?.focus();
+                          }}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-[#2a2a3a] rounded-full transition-colors text-[#d1d1e0]/50 hover:text-white"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </motion.button>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </section>
+              </>
+            ) : (
+              <div className="flex flex-col gap-6 py-4">
+                <Search className="w-5 h-5 text-[#10b981]/40" />
+                <Target className="w-5 h-5 text-[#10b981]/40" />
+                <TrendingUp className="w-5 h-5 text-[#f97316]/40" />
               </div>
-              <div className="bg-[#161625] p-5 rounded-lg border border-[#2a2a3a] relative overflow-hidden group">
-                <div className="absolute top-0 right-0 p-1 opacity-10 group-hover:opacity-20 transition-opacity">
-                  <TrendingUp className="w-12 h-12" />
-                </div>
-                <div className="flex items-center gap-2 mb-1">
-                  <TrendingUp className="w-3 h-3 text-[#f97316]" />
-                  <p className="text-[10px] uppercase opacity-60 tracking-wider">Kudos Remaining</p>
-                </div>
-                <p className="text-2xl font-mono text-[#f97316]">{remainingKudos.toLocaleString()}</p>
-              </div>
-            </div>
-          </section>
-
-          <section>
-            <label className="text-xs uppercase tracking-widest text-[#10b981] block mb-4 font-bold">Search</label>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#10b981]/50" />
-              <input 
-                id="search-input"
-                type="text" 
-                placeholder="Search ranks..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-[#161625] border border-[#2a2a3a] rounded-lg pl-10 pr-4 py-3 outline-none focus:border-[#10b981] transition-all w-full text-sm font-mono text-white"
-              />
-            </div>
-          </section>
-
-
-        </aside>
+            )}
+          </div>
+        </motion.aside>
 
         {/* Main Content */}
         <main className="flex-1 flex flex-col bg-[#0c0c12] p-6 md:p-8 overflow-hidden relative">

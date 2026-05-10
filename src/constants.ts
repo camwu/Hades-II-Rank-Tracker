@@ -15,6 +15,7 @@ export interface Rank {
   bossResourceQty: number;
   bossResourceImageUrl: string;
   cumulativeKudos: number;
+  cumulativeResources: ResourceCost[];
   imageUrl: string;
 }
 
@@ -38,6 +39,15 @@ const LEVEL_RESOURCES: Record<number, string> = {
   2: "Void Lens",
   1: "Zodiac Sand"
 };
+
+export const RESOURCE_ORDER = [
+  ["Kudos", null],
+  ["Feather", "Cinder"],
+  ["Golden Apple", "Tears"],
+  ["Pearl", "Nightmare"],
+  ["Wool", "Void Lens"],
+  ["Moon Dust", "Zodiac Sand"]
+];
 
 const GROUP_QUANTITY: Record<string, number> = {
   "Wraith": 1,
@@ -116,11 +126,20 @@ function toRoman(num: number): string {
 
 function processRanks(): Rank[] {
   let cumulativeKudos = 0;
+  const resourceTotals: Record<string, number> = {};
+  
   return RAW_DATA.map((item, index) => {
     cumulativeKudos += item.cost;
     const name = `${item.group} ${toRoman(item.level)}`;
     const resourceQty = GROUP_QUANTITY[item.group] || 1;
     const resourceName = LEVEL_RESOURCES[item.level] || "N/A";
+    
+    // Track cumulative resources
+    resourceTotals[resourceName] = (resourceTotals[resourceName] || 0) + resourceQty;
+    
+    const cumulativeResources = Object.entries(resourceTotals)
+      .map(([name, amount]) => ({ name, amount }))
+      .sort((a, b) => a.name.localeCompare(b.name));
     
     return {
       id: index + 1,
@@ -133,6 +152,7 @@ function processRanks(): Rank[] {
       bossResourceQty: resourceQty,
       bossResourceImageUrl: `/assets/resources/${resourceName.replace(/\s+/g, '_')}.png`,
       cumulativeKudos,
+      cumulativeResources,
       imageUrl: `/assets/ranks/${name.replace(/\s+/g, '_')}.png`
     };
   });
