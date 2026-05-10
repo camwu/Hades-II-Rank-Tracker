@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Trophy, 
@@ -49,7 +49,20 @@ export default function App() {
   const [isSpentExpanded, setIsSpentExpanded] = useState(true);
   const [isRemainingExpanded, setIsRemainingExpanded] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<string>('');
+  const historyContainerRef = useRef<HTMLDivElement>(null);
   
+  useEffect(() => {
+    if (isHistoryExpanded && historyContainerRef.current) {
+      // Use a brief timeout to ensure the container has height before scrolling
+      const timeoutId = setTimeout(() => {
+        if (historyContainerRef.current) {
+          historyContainerRef.current.scrollTop = historyContainerRef.current.scrollHeight;
+        }
+      }, 50);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isHistoryExpanded, currentRankId]);
+
   useEffect(() => {
     fetch('https://api.github.com/repos/camwu/hades-2-rank-tracker/commits/main')
       .then(res => res.json())
@@ -161,7 +174,7 @@ export default function App() {
         {/* Sidebar */}
         <motion.aside 
           initial={false}
-          animate={{ width: isSidebarCollapsed ? 64 : 320 }}
+          animate={{ width: isSidebarCollapsed ? 64 : 350 }}
           className="bg-[#0e0e16] border-r border-[#2a2a3a] flex flex-col hidden lg:flex shrink-0 relative z-20"
         >
           {/* Toggle Button Integrated into Divider */}
@@ -208,45 +221,43 @@ export default function App() {
                           </div>
                         </button>
 
-                        <div className={`px-5 pt-2 transition-all ${isSpentExpanded ? 'pb-5' : 'pb-4'}`}>
+                        <div className={`px-4 pt-2 transition-all ${isSpentExpanded ? 'pb-5' : 'pb-4'}`}>
                           {/* Kudos Header - Always Visible */}
-                          <div className={`flex items-center gap-3 transition-all ${isSpentExpanded ? 'mb-4' : 'mb-0'}`}>
-                            <div className="w-8 h-8 rounded-lg bg-[#1a1a2a] flex items-center justify-center border border-[#2a2a3a]">
+                          <div className={`flex items-start gap-3 transition-all ${isSpentExpanded ? 'mb-5' : 'mb-0'}`}>
+                            <div className="w-[34px] h-[34px] rounded-lg bg-[#1a1a2a] flex items-center justify-center border border-[#2a2a3a] flex-shrink-0">
                               <img src="/assets/resources/Kudos.png" alt="" className="w-5 h-5 object-contain" />
                             </div>
-                            <div>
-                              <p className="text-sm font-mono text-white leading-none font-bold">{currentRank.cumulativeKudos.toLocaleString()}</p>
-                              <p className="text-[10px] uppercase opacity-60 font-sans mt-1">Kudos</p>
+                            <div className="min-w-0 pt-0.5">
+                              <p className="text-base font-mono text-white leading-none font-bold tracking-tight">{currentRank.cumulativeKudos.toLocaleString()}</p>
+                              <p className="text-[10px] uppercase opacity-50 font-sans mt-1.5 tracking-wider">Kudos</p>
                             </div>
                           </div>
 
-                          <motion.div 
+                          <motion.div
                             initial={false}
-                            animate={{ 
+                            animate={{
                               height: isSpentExpanded ? 'auto' : 0,
                               opacity: isSpentExpanded ? 1 : 0
                             }}
                             className="overflow-hidden"
                           >
-                            <div className="grid grid-cols-2 gap-y-3 gap-x-4 pt-4 border-t border-[#2a2a3a]/50">
-                              {RESOURCE_ORDER.slice(1).map((row, rowIdx) => 
-                                row.map((resName, colIdx) => {
-                                  if (!resName) return <div key={`spent-empty-${rowIdx}-${colIdx}`} />;
-                                  const amount = currentRank.cumulativeResources.find(r => r.name === resName)?.amount || 0;
-                                  
-                                  return (
-                                    <div key={`spent-${resName}`} className="flex items-center gap-2.5">
-                                      <div className="w-8 h-8 flex-shrink-0 rounded-lg bg-[#1a1a2a] flex items-center justify-center border border-[#2a2a3a]/30">
-                                        <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-5 h-5 object-contain" />
-                                      </div>
-                                      <div className="min-w-0">
-                                        <p className="text-sm font-mono text-white leading-none">{amount.toLocaleString()}</p>
-                                        <p className="text-[10px] uppercase opacity-60 font-sans mt-1 leading-tight">{resName}</p>
-                                      </div>
+                            <div className="grid grid-cols-2 gap-y-4 gap-x-4 pt-4 border-t border-[#2a2a3a]/50 w-full">
+                              {['Feather', 'Golden Apple', 'Pearl', 'Wool', 'Moon Dust', 'Cinder', 'Tears', 'Nightmare', 'Void Lens', 'Zodiac Sand'].map((resName) => {
+                                const amount = currentRank.cumulativeResources.find(r => r.name === resName)?.amount || 0;
+                                if (amount === 0) return null;
+                                
+                                return (
+                                  <div key={`spent-${resName}`} className="flex items-start gap-3 min-w-0">
+                                    <div className="w-[32px] h-[32px] flex-shrink-0 rounded-lg bg-[#1a1a2a] flex items-center justify-center border border-[#2a2a3a]/30">
+                                      <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-5 h-5 object-contain" />
                                     </div>
-                                  );
-                                })
-                              )}
+                                    <div className="min-w-0 pt-0.5">
+                                      <p className="text-sm font-mono text-white leading-none font-bold">{amount.toLocaleString()}</p>
+                                      <p className="text-[10px] uppercase opacity-50 font-sans mt-1.5 leading-tight tracking-normal">{resName === 'Golden Apple' ? 'Gold Apple' : resName}</p>
+                                    </div>
+                                  </div>
+                                );
+                              })}
                             </div>
                           </motion.div>
                         </div>
@@ -269,47 +280,45 @@ export default function App() {
                           </div>
                         </button>
 
-                        <div className={`px-5 pt-2 transition-all ${isRemainingExpanded ? 'pb-5' : 'pb-4'}`}>
+                        <div className={`px-4 pt-2 transition-all ${isRemainingExpanded ? 'pb-5' : 'pb-4'}`}>
                           {/* Kudos Header - Always Visible */}
-                          <div className={`flex items-center gap-3 transition-all ${isRemainingExpanded ? 'mb-4' : 'mb-0'}`}>
-                            <div className="w-8 h-8 rounded-lg bg-[#1a1a2a] flex items-center justify-center border border-[#2a2a3a]">
+                          <div className={`flex items-start gap-3 transition-all ${isRemainingExpanded ? 'mb-5' : 'mb-0'}`}>
+                            <div className="w-[34px] h-[34px] rounded-lg bg-[#1a1a2a] flex items-center justify-center border border-[#2a2a3a] flex-shrink-0">
                               <img src="/assets/resources/Kudos.png" alt="" className="w-5 h-5 object-contain" />
                             </div>
-                            <div>
-                              <p className="text-sm font-mono text-white leading-none font-bold">{remainingKudos.toLocaleString()}</p>
-                              <p className="text-[10px] uppercase opacity-60 font-sans mt-1">Kudos</p>
+                            <div className="min-w-0 pt-0.5">
+                              <p className="text-base font-mono text-white leading-none font-bold tracking-tight">{remainingKudos.toLocaleString()}</p>
+                              <p className="text-[10px] uppercase opacity-50 font-sans mt-1.5 tracking-wider">Kudos</p>
                             </div>
                           </div>
 
-                          <motion.div 
+                          <motion.div
                             initial={false}
-                            animate={{ 
+                            animate={{
                               height: isRemainingExpanded ? 'auto' : 0,
                               opacity: isRemainingExpanded ? 1 : 0
                             }}
                             className="overflow-hidden"
                           >
-                            <div className="grid grid-cols-2 gap-y-3 gap-x-4 pt-4 border-t border-[#2a2a3a]/50">
-                              {RESOURCE_ORDER.slice(1).map((row, rowIdx) => 
-                                row.map((resName, colIdx) => {
-                                  if (!resName) return <div key={`rem-empty-${rowIdx}-${colIdx}`} />;
-                                  const amount = totalResources.find(r => r.name === resName)?.amount 
-                                      ? (totalResources.find(r => r.name === resName)!.amount - (currentRank.cumulativeResources.find(r => r.name === resName)?.amount || 0))
-                                      : 0;
-                                  
-                                  return (
-                                    <div key={`rem-${resName}`} className="flex items-center gap-2.5">
-                                      <div className="w-8 h-8 flex-shrink-0 rounded-lg bg-[#1a1a2a] flex items-center justify-center border border-[#2a2a3a]/30">
-                                        <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-5 h-5 object-contain" />
-                                      </div>
-                                      <div className="min-w-0">
-                                        <p className="text-sm font-mono text-white leading-none">{amount.toLocaleString()}</p>
-                                        <p className="text-[10px] uppercase opacity-60 font-sans mt-1 leading-tight">{resName}</p>
-                                      </div>
+                            <div className="grid grid-cols-2 gap-y-4 gap-x-4 pt-4 border-t border-[#2a2a3a]/50 w-full">
+                              {['Feather', 'Golden Apple', 'Pearl', 'Wool', 'Moon Dust', 'Cinder', 'Tears', 'Nightmare', 'Void Lens', 'Zodiac Sand'].map((resName) => {
+                                const amount = totalResources.find(r => r.name === resName)?.amount 
+                                    ? (totalResources.find(r => r.name === resName)!.amount - (currentRank.cumulativeResources.find(r => r.name === resName)?.amount || 0))
+                                    : 0;
+                                if (amount === 0) return null;
+                                
+                                return (
+                                  <div key={`rem-${resName}`} className="flex items-start gap-3 min-w-0">
+                                    <div className="w-[32px] h-[32px] flex-shrink-0 rounded-lg bg-[#1a1a2a] flex items-center justify-center border border-[#2a2a3a]/30">
+                                      <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-5 h-5 object-contain" />
                                     </div>
-                                  );
-                                })
-                              )}
+                                    <div className="min-w-0 pt-0.5">
+                                      <p className="text-sm font-mono text-white leading-none font-bold">{amount.toLocaleString()}</p>
+                                      <p className="text-[10px] uppercase opacity-50 font-sans mt-1.5 leading-tight tracking-normal">{resName === 'Golden Apple' ? 'Gold Apple' : resName}</p>
+                                    </div>
+                                  </div>
+                                );
+                              })}
                             </div>
                           </motion.div>
                         </div>
@@ -360,6 +369,7 @@ export default function App() {
                   </button>
                   
                   <motion.div
+                    ref={historyContainerRef}
                     initial={false}
                     animate={{ 
                       height: isHistoryExpanded ? 'auto' : 0,
@@ -367,7 +377,7 @@ export default function App() {
                       opacity: isHistoryExpanded ? 1 : 0
                     }}
                     transition={{ duration: 0.3, ease: 'easeInOut' }}
-                    className="overflow-y-auto overflow-x-hidden border-t border-[#2a2a3a]/30 bg-[#0c0c12]/50"
+                    className="overflow-y-auto overflow-x-hidden border-t border-[#2a2a3a]/30 bg-[#0c0c12]/50 scroll-smooth"
                   >
                     <div className="divide-y divide-[#2a2a3a]/30">
                       {completedRanks.map((rank) => {
