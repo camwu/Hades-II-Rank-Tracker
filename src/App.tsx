@@ -121,6 +121,36 @@ export default function App() {
         <div>
           <h1 className="text-3xl font-sans font-black tracking-wider text-[#10b981] uppercase drop-shadow-[0_0_20px_rgba(16,185,129,0.4)]">Hades II Rank Tracker</h1>
         </div>
+
+        <div className="flex items-center gap-6">
+          <div className="relative group w-80">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#10b981]/50" />
+            <input 
+              id="search-input"
+              type="text" 
+              placeholder="Search..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="bg-[#161625] border border-[#2a2a3a] rounded-lg pl-10 pr-10 py-2.5 outline-none focus:border-[#10b981] transition-all w-full text-sm font-mono text-white"
+            />
+            <AnimatePresence>
+              {searchQuery && (
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  onClick={() => {
+                    setSearchQuery('');
+                    document.getElementById('search-input')?.focus();
+                  }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-[#2a2a3a] rounded-full transition-colors text-[#d1d1e0]/50 hover:text-white"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </motion.button>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
       </header>
 
       <div className="flex flex-1 overflow-hidden">
@@ -238,43 +268,57 @@ export default function App() {
                     </div>
                   </div>
                 </section>
-
-                <section>
-                  <label className="text-xs uppercase tracking-widest text-[#10b981] block mb-4 font-bold">Search</label>
-                  <div className="relative group">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#10b981]/50" />
-                    <input 
-                      id="search-input"
-                      type="text" 
-                      placeholder="Search ranks..." 
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="bg-[#161625] border border-[#2a2a3a] rounded-lg pl-10 pr-10 py-3 outline-none focus:border-[#10b981] transition-all w-full text-sm font-mono text-white"
-                    />
-                    <AnimatePresence>
-                      {searchQuery && (
-                        <motion.button
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.8 }}
-                          onClick={() => {
-                            setSearchQuery('');
-                            document.getElementById('search-input')?.focus();
-                          }}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-[#2a2a3a] rounded-full transition-colors text-[#d1d1e0]/50 hover:text-white"
-                        >
-                          <X className="w-3.5 h-3.5" />
-                        </motion.button>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </section>
               </>
             ) : (
-              <div className="flex flex-col gap-6 py-4">
-                <Search className="w-5 h-5 text-[#10b981]/40" />
-                <Target className="w-5 h-5 text-[#10b981]/40" />
-                <TrendingUp className="w-5 h-5 text-[#f97316]/40" />
+              <div className="flex flex-col gap-8 py-4 items-center">
+                <div className="group relative">
+                  <div className="w-10 h-10 bg-[#1a1a2a] rounded-lg flex items-center justify-center border border-[#2a2a3a]/50">
+                    <img 
+                      src={currentRank.imageUrl} 
+                      alt="" 
+                      className="w-6 h-6 object-contain"
+                      onError={(e) => (e.currentTarget.style.display = 'none')}
+                    />
+                  </div>
+                  <div className="absolute left-full ml-4 px-2 py-1 bg-[#1a1a2a] border border-[#2a2a3a] rounded text-[10px] text-[#10b981] whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
+                    Current Rank: {currentRank.name}
+                  </div>
+                </div>
+
+                <div className="group relative flex flex-col items-center">
+                  <div className="relative w-11 h-11">
+                    <svg className="w-full h-full transform -rotate-90">
+                      <circle
+                        cx="22"
+                        cy="22"
+                        r="18"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                        fill="transparent"
+                        className="text-[#1a1a2a]"
+                      />
+                      <motion.circle
+                        initial={{ strokeDashoffset: 113 }}
+                        animate={{ strokeDashoffset: 113 - (113 * progressPercentage) / 100 }}
+                        cx="22"
+                        cy="22"
+                        r="18"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                        strokeDasharray={113}
+                        strokeLinecap="round"
+                        fill="transparent"
+                        className="text-[#10b981]"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-[10px] font-mono font-black text-[#10b981]">{progressPercentage.toFixed(0)}%</span>
+                    </div>
+                  </div>
+                  <div className="absolute left-full ml-4 px-2 py-1 bg-[#1a1a2a] border border-[#2a2a3a] rounded text-[10px] text-[#10b981] whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
+                    Completion: {progressPercentage.toFixed(1)}%
+                  </div>
+                </div>
               </div>
             )}
           </div>
