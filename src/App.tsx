@@ -118,8 +118,9 @@ export default function App() {
     <div id="app-root" className="h-screen bg-[#0c0c12] text-[#d1d1e0] font-sans selection:bg-[#a855f7]/30 selection:text-white overflow-hidden flex flex-col">
       {/* Header */}
       <header className="h-24 flex items-center justify-between px-8 bg-[#12121e] border-b border-[#2a2a3a] shrink-0 z-10">
-        <div>
-          <h1 className="text-3xl font-sans font-black tracking-wider text-[#10b981] uppercase drop-shadow-[0_0_20px_rgba(16,185,129,0.4)]">Hades II Rank Tracker</h1>
+        <div className="flex items-center gap-6">
+          <img src="/favicon.png" alt="" className="w-10 h-10 object-contain drop-shadow-[0_0_15px_rgba(16,185,129,0.4)]" />
+          <h1 className="text-3xl font-sans font-black tracking-wider text-[#10b981] uppercase">Hades II Rank Tracker</h1>
         </div>
 
         <div className="flex items-center gap-6">
@@ -340,12 +341,12 @@ export default function App() {
 
           <div className="flex-1 overflow-y-auto border border-[#2a2a3a] rounded-xl bg-[#12121e] shadow-2xl custom-scrollbar">
             <div className="grid grid-cols-1 divide-y divide-[#2a2a3a]">
-              {/* Collapsible Completed Section */}
+              {/* Collapsible Completed Section - Pinned to top */}
               {completedRanks.length > 0 && (
-                <div className="bg-[#0c0c12]/20">
+                <div className="sticky top-0 bg-[#12121e] border-b border-[#2a2a3a] shadow-[0_10px_30px_rgba(0,0,0,0.5)] z-20">
                   <button 
                     onClick={() => setIsHistoryExpanded(!isHistoryExpanded)}
-                    className="w-full flex items-center justify-between p-4 px-6 hover:bg-[#1a1a2a]/40 transition-colors border-b border-[#2a2a3a]/50 group"
+                    className="w-full flex items-center justify-between p-4 px-6 hover:bg-[#1a1a2a]/40 transition-colors group"
                   >
                     <div className="flex items-center gap-3">
                       <div className="p-1 px-2 rounded-md bg-[#10b981]/10 border border-[#10b981]/20">
@@ -365,10 +366,11 @@ export default function App() {
                     initial={false}
                     animate={{ 
                       height: isHistoryExpanded ? 'auto' : 0,
+                      maxHeight: isHistoryExpanded ? '300px' : 0,
                       opacity: isHistoryExpanded ? 1 : 0
                     }}
                     transition={{ duration: 0.3, ease: 'easeInOut' }}
-                    className="overflow-hidden"
+                    className="overflow-y-auto overflow-x-hidden border-t border-[#2a2a3a]/30 bg-[#0c0c12]/50"
                   >
                     <div className="divide-y divide-[#2a2a3a]/30">
                       {completedRanks.map((rank) => {
@@ -378,7 +380,7 @@ export default function App() {
                             key={rank.id}
                             id={`rank-row-${rank.id}`}
                             onClick={() => setCurrentRankId(rank.id)}
-                            className="grid grid-cols-5 md:grid-cols-6 gap-4 py-4 px-6 text-sm font-mono opacity-30 italic hover:opacity-100 hover:bg-[#1a1a2a]/20 cursor-pointer transition-all items-center border-l border-transparent"
+                            className="grid grid-cols-5 md:grid-cols-6 gap-4 py-4 px-6 text-sm font-mono opacity-30 italic hover:opacity-100 hover:bg-[#1a1a2a]/20 cursor-pointer transition-all items-center"
                           >
                             <div className="col-span-2 flex items-center gap-3">
                               <span className="text-[10px] opacity-30 w-8">#{rank.id.toString().padStart(3, '0')}</span>
@@ -476,6 +478,7 @@ export default function App() {
                   </div>
                 );
               })}
+
               {filteredRanks.length === 0 && (
                 <div className="p-12 text-center opacity-40 text-sm italic font-serif">
                   No records found

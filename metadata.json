@@ -1,6 +1,6 @@
 {
   "name": "Hades II Rank Tracker",
-  "description": "Track your progress through the Spirit Mixer ranks in Hades II, including resource costs and completion percentage.",
+  "description": "Simple web app to visually track progress in unlocking Hades II ranks",
   "requestFramePermissions": [],
   "majorCapabilities": []
 }
