@@ -11,4 +11,28 @@
   body {
     @apply bg-[#0c0c12] text-[#d1d1e0];
   }
+
+  /* Global Scrollbar Styling */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #2a2a3a transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #2a2a3a;
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #10b981;
+  }
 }

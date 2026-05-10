@@ -18,7 +18,8 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  History
 } from 'lucide-react';
 import { RANKS, TOTAL_KUDOS, Rank, RESOURCE_ORDER } from './constants';
 import { 
@@ -45,6 +46,8 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isHistoryExpanded, setIsHistoryExpanded] = useState(false);
+  const [isSpentExpanded, setIsSpentExpanded] = useState(true);
+  const [isRemainingExpanded, setIsRemainingExpanded] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<string>('');
   
   useEffect(() => {
@@ -170,12 +173,12 @@ export default function App() {
             {isSidebarCollapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
           </button>
 
-          <div className={`flex-1 flex flex-col gap-6 overflow-y-auto custom-scrollbar p-8 ${isSidebarCollapsed ? 'items-center overflow-x-hidden' : ''}`}>
+          <div className={`flex-1 flex flex-col gap-6 overflow-y-auto p-8 ${isSidebarCollapsed ? 'items-center overflow-x-hidden' : ''}`}>
             {!isSidebarCollapsed ? (
               <>
                 <section>
                   <div className="mb-6 font-sans">
-                    <label className="text-xs uppercase tracking-widest text-[#10b981] block mb-2 font-bold">Current Rank</label>
+                    <label className="text-xs uppercase tracking-widest text-[#10b981] block mb-2 font-bold opacity-70">Current Rank</label>
                     <div className="bg-[#12121e] border border-[#2a2a3a] rounded-xl p-4 flex items-center gap-4 shadow-lg">
                       <div className="w-12 h-12 bg-[#1a1a2a] rounded-lg flex items-center justify-center border border-[#2a2a3a]/50">
                         <img 
@@ -192,9 +195,9 @@ export default function App() {
                   </div>
 
                   <div className="mb-2">
-                    <div className="flex justify-between items-end mb-2">
-                      <label className="text-xs uppercase tracking-widest text-[#10b981] font-bold">Global Completion</label>
-                      <p className="text-2xl font-mono font-black text-[#10b981] leading-none">{progressPercentage.toFixed(1)}%</p>
+                    <div className="flex justify-between items-baseline mb-2">
+                      <label className="text-xs uppercase tracking-widest text-[#10b981] font-bold opacity-70">Global Completion</label>
+                      <p className="text-lg font-black text-[#10b981] leading-none tracking-wide">{progressPercentage.toFixed(1)}%</p>
                     </div>
                     <div className="w-full h-4 bg-[#1a1a2a] rounded-full overflow-hidden border border-[#2a2a3a] shadow-inner p-0.5 mb-6">
                       <motion.div 
@@ -205,65 +208,119 @@ export default function App() {
                     </div>
 
                     <div className="space-y-4">
-                      <div className="bg-[#161625] p-5 rounded-lg border border-[#2a2a3a] relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 p-1 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
-                          <Target className="w-16 h-16" />
-                        </div>
-                        <div className="flex items-center gap-2 mb-3">
-                          <Target className="w-3 h-3 text-[#10b981]" />
-                          <p className="text-[10px] uppercase opacity-60 tracking-wider font-sans">Resources Spent</p>
-                        </div>
-                        <div className="grid grid-cols-2 gap-y-3 gap-x-4">
-                          {RESOURCE_ORDER.map((row, rowIdx) => 
-                            row.map((resName, colIdx) => {
-                              if (!resName) return <div key={`spent-empty-${rowIdx}-${colIdx}`} />;
-                              const amount = resName === "Kudos" 
-                                ? currentRank.cumulativeKudos 
-                                : currentRank.cumulativeResources.find(r => r.name === resName)?.amount || 0;
-                              
-                              return (
-                                <div key={`spent-${resName}`} className="flex items-center gap-2">
-                                  <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-4 h-4 object-contain" />
-                                  <div>
-                                    <p className="text-sm font-mono text-white leading-none">{amount.toLocaleString()}</p>
-                                    <p className="text-[10px] uppercase opacity-60 font-sans mt-1">{resName}</p>
-                                  </div>
-                                </div>
-                              );
-                            })
-                          )}
+                      <div className="bg-[#161625] rounded-lg border border-[#2a2a3a] relative overflow-hidden group">
+
+                        <button 
+                          onClick={() => setIsSpentExpanded(!isSpentExpanded)}
+                          className="w-full flex items-center justify-between px-4 py-3 hover:bg-[#2a2a3a]/30 transition-colors group/header"
+                        >
+                          <div className="flex items-center gap-2">
+                            <Target className="w-3 h-3 text-[#10b981]" />
+                            <p className="text-xs uppercase opacity-70 tracking-wider font-bold whitespace-nowrap">Resources Spent</p>
+                          </div>
+                          <div className="p-1.5 rounded transition-colors text-[#10b981]/50 group-hover/header:text-[#10b981] group-hover/header:bg-[#2a2a3a]">
+                            <motion.div animate={{ rotate: isSpentExpanded ? 90 : 0 }}>
+                              <ChevronRight className="w-4 h-4" />
+                            </motion.div>
+                          </div>
+                        </button>
+
+                        <div className={`px-5 pt-2 transition-all ${isSpentExpanded ? 'pb-5' : 'pb-4'}`}>
+                          {/* Kudos Header - Always Visible */}
+                          <div className={`flex items-center gap-2 transition-all ${isSpentExpanded ? 'mb-4' : 'mb-0'}`}>
+                            <img src="/assets/resources/Kudos.png" alt="" className="w-4 h-4 object-contain" />
+                            <div>
+                              <p className="text-sm font-mono text-white leading-none">{currentRank.cumulativeKudos.toLocaleString()}</p>
+                              <p className="text-[10px] uppercase opacity-60 font-sans mt-1">Kudos</p>
+                            </div>
+                          </div>
+
+                          <motion.div 
+                            initial={false}
+                            animate={{ 
+                              height: isSpentExpanded ? 'auto' : 0,
+                              opacity: isSpentExpanded ? 1 : 0
+                            }}
+                            className="overflow-hidden"
+                          >
+                            <div className="grid grid-cols-2 gap-y-3 gap-x-4 pt-4 border-t border-[#2a2a3a]/50">
+                              {RESOURCE_ORDER.slice(1).map((row, rowIdx) => 
+                                row.map((resName, colIdx) => {
+                                  if (!resName) return <div key={`spent-empty-${rowIdx}-${colIdx}`} />;
+                                  const amount = currentRank.cumulativeResources.find(r => r.name === resName)?.amount || 0;
+                                  
+                                  return (
+                                    <div key={`spent-${resName}`} className="flex items-center gap-2">
+                                      <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-4 h-4 object-contain" />
+                                      <div>
+                                        <p className="text-sm font-mono text-white leading-none">{amount.toLocaleString()}</p>
+                                        <p className="text-[10px] uppercase opacity-60 font-sans mt-1">{resName}</p>
+                                      </div>
+                                    </div>
+                                  );
+                                })
+                              )}
+                            </div>
+                          </motion.div>
                         </div>
                       </div>
 
-                      <div className="bg-[#161625] p-5 rounded-lg border border-[#2a2a3a] relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 p-1 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
-                          <TrendingUp className="w-16 h-16" />
-                        </div>
-                        <div className="flex items-center gap-2 mb-3">
-                          <TrendingUp className="w-3 h-3 text-[#f97316]" />
-                          <p className="text-[10px] uppercase opacity-60 tracking-wider font-sans">Resources Remaining</p>
-                        </div>
-                        <div className="grid grid-cols-2 gap-y-3 gap-x-4">
-                          {RESOURCE_ORDER.map((row, rowIdx) => 
-                            row.map((resName, colIdx) => {
-                              if (!resName) return <div key={`rem-empty-${rowIdx}-${colIdx}`} />;
-                              const amount = resName === "Kudos" 
-                                ? remainingKudos 
-                                : totalResources.find(r => r.name === resName)?.amount 
-                                  ? (totalResources.find(r => r.name === resName)!.amount - (currentRank.cumulativeResources.find(r => r.name === resName)?.amount || 0))
-                                  : 0;
-                              
-                              return (
-                                <div key={`rem-${resName}`} className="flex items-center gap-2">
-                                  <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-4 h-4 object-contain opacity-70" />
-                                  <div>
-                                    <p className="text-sm font-mono text-[#f97316] leading-none">{amount.toLocaleString()}</p>
-                                    <p className="text-[10px] uppercase opacity-60 font-sans mt-1">{resName}</p>
-                                  </div>
-                                </div>
-                              );
-                            })
-                          )}
+                      <div className="bg-[#161625] rounded-lg border border-[#2a2a3a] relative overflow-hidden group">
+
+                        <button 
+                          onClick={() => setIsRemainingExpanded(!isRemainingExpanded)}
+                          className="w-full flex items-center justify-between px-4 py-3 hover:bg-[#2a2a3a]/30 transition-colors group/header"
+                        >
+                          <div className="flex items-center gap-2">
+                            <TrendingUp className="w-3 h-3 text-[#f97316]" />
+                            <p className="text-xs uppercase opacity-70 tracking-wider font-bold whitespace-nowrap">Resources Remaining</p>
+                          </div>
+                          <div className="p-1.5 rounded transition-colors text-[#f97316]/50 group-hover/header:text-[#f97316] group-hover/header:bg-[#2a2a3a]">
+                            <motion.div animate={{ rotate: isRemainingExpanded ? 90 : 0 }}>
+                              <ChevronRight className="w-4 h-4" />
+                            </motion.div>
+                          </div>
+                        </button>
+
+                        <div className={`px-5 pt-2 transition-all ${isRemainingExpanded ? 'pb-5' : 'pb-4'}`}>
+                          {/* Kudos Header - Always Visible */}
+                          <div className={`flex items-center gap-2 transition-all ${isRemainingExpanded ? 'mb-4' : 'mb-0'}`}>
+                            <img src="/assets/resources/Kudos.png" alt="" className="w-4 h-4 object-contain" />
+                            <div>
+                              <p className="text-sm font-mono text-[#f97316] leading-none">{remainingKudos.toLocaleString()}</p>
+                              <p className="text-[10px] uppercase opacity-60 font-sans mt-1">Kudos</p>
+                            </div>
+                          </div>
+
+                          <motion.div 
+                            initial={false}
+                            animate={{ 
+                              height: isRemainingExpanded ? 'auto' : 0,
+                              opacity: isRemainingExpanded ? 1 : 0
+                            }}
+                            className="overflow-hidden"
+                          >
+                            <div className="grid grid-cols-2 gap-y-3 gap-x-4 pt-4 border-t border-[#2a2a3a]/50">
+                              {RESOURCE_ORDER.slice(1).map((row, rowIdx) => 
+                                row.map((resName, colIdx) => {
+                                  if (!resName) return <div key={`rem-empty-${rowIdx}-${colIdx}`} />;
+                                  const amount = totalResources.find(r => r.name === resName)?.amount 
+                                      ? (totalResources.find(r => r.name === resName)!.amount - (currentRank.cumulativeResources.find(r => r.name === resName)?.amount || 0))
+                                      : 0;
+                                  
+                                  return (
+                                    <div key={`rem-${resName}`} className="flex items-center gap-2">
+                                      <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-4 h-4 object-contain opacity-70" />
+                                      <div>
+                                        <p className="text-sm font-mono text-[#f97316] leading-none">{amount.toLocaleString()}</p>
+                                        <p className="text-[10px] uppercase opacity-60 font-sans mt-1">{resName}</p>
+                                      </div>
+                                    </div>
+                                  );
+                                })
+                              )}
+                            </div>
+                          </motion.div>
                         </div>
                       </div>
                     </div>
@@ -339,7 +396,7 @@ export default function App() {
             <span className="text-right">Status</span>
           </div>
 
-          <div className="flex-1 overflow-y-auto border border-[#2a2a3a] rounded-xl bg-[#12121e] shadow-2xl custom-scrollbar">
+          <div className="flex-1 overflow-y-auto border border-[#2a2a3a] rounded-xl bg-[#12121e] shadow-2xl">
             <div className="grid grid-cols-1 divide-y divide-[#2a2a3a]">
               {/* Collapsible Completed Section - Pinned to top */}
               {completedRanks.length > 0 && (
@@ -349,10 +406,10 @@ export default function App() {
                     className="w-full flex items-center justify-between p-4 px-6 hover:bg-[#1a1a2a]/40 transition-colors group"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="p-1 px-2 rounded-md bg-[#10b981]/10 border border-[#10b981]/20">
-                        <span className="text-[10px] font-black text-[#10b981] uppercase tracking-widest">{completedRanks.length} Recorded</span>
-                      </div>
-                      <span className="text-[11px] uppercase tracking-[0.2em] opacity-40 font-black">Completed Ranks</span>
+                      <History className="w-4 h-4 text-[#d1d1e0] opacity-30" />
+                      <span className="text-[11px] uppercase tracking-[0.2em] text-[#d1d1e0] opacity-40 font-black">
+                        {completedRanks.length} Completed Ranks
+                      </span>
                     </div>
                     <motion.div
                       animate={{ rotate: isHistoryExpanded ? 180 : 0 }}
@@ -508,22 +565,6 @@ export default function App() {
           This is an unofficial, fan-developed project. Hades II and all related characters and assets are the sole property of Supergiant Games.
         </div>
       </footer>
-
-      <style>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: #0c0c12;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #2a2a3a;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #10b981;
-        }
-      `}</style>
     </div>
   );
 }
