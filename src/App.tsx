@@ -177,26 +177,9 @@ export default function App() {
             {!isSidebarCollapsed ? (
               <>
                 <section>
-                  <div className="mb-6 font-sans">
-                    <label className="text-xs uppercase tracking-widest text-[#10b981] block mb-2 font-bold opacity-70">Current Rank</label>
-                    <div className="bg-[#12121e] border border-[#2a2a3a] rounded-xl p-4 flex items-center gap-4 shadow-lg">
-                      <div className="w-12 h-12 bg-[#1a1a2a] rounded-lg flex items-center justify-center border border-[#2a2a3a]/50">
-                        <img 
-                          src={currentRank.imageUrl} 
-                          alt="" 
-                          className="w-8 h-8 object-contain"
-                          onError={(e) => (e.currentTarget.style.display = 'none')}
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-lg font-black text-white uppercase truncate tracking-wide">{currentRank.name}</p>
-                      </div>
-                    </div>
-                  </div>
-
                   <div className="mb-2">
                     <div className="flex justify-between items-baseline mb-2">
-                      <label className="text-xs uppercase tracking-widest text-[#10b981] font-bold opacity-70">Global Completion</label>
+                      <label className="text-xs uppercase tracking-widest text-[#10b981] font-bold">Progress</label>
                       <p className="text-lg font-black text-[#10b981] leading-none tracking-wide">{progressPercentage.toFixed(1)}%</p>
                     </div>
                     <div className="w-full h-4 bg-[#1a1a2a] rounded-full overflow-hidden border border-[#2a2a3a] shadow-inner p-0.5 mb-6">
@@ -227,10 +210,12 @@ export default function App() {
 
                         <div className={`px-5 pt-2 transition-all ${isSpentExpanded ? 'pb-5' : 'pb-4'}`}>
                           {/* Kudos Header - Always Visible */}
-                          <div className={`flex items-center gap-2 transition-all ${isSpentExpanded ? 'mb-4' : 'mb-0'}`}>
-                            <img src="/assets/resources/Kudos.png" alt="" className="w-4 h-4 object-contain" />
+                          <div className={`flex items-center gap-3 transition-all ${isSpentExpanded ? 'mb-4' : 'mb-0'}`}>
+                            <div className="w-8 h-8 rounded-lg bg-[#1a1a2a] flex items-center justify-center border border-[#2a2a3a]">
+                              <img src="/assets/resources/Kudos.png" alt="" className="w-5 h-5 object-contain" />
+                            </div>
                             <div>
-                              <p className="text-sm font-mono text-white leading-none">{currentRank.cumulativeKudos.toLocaleString()}</p>
+                              <p className="text-sm font-mono text-white leading-none font-bold">{currentRank.cumulativeKudos.toLocaleString()}</p>
                               <p className="text-[10px] uppercase opacity-60 font-sans mt-1">Kudos</p>
                             </div>
                           </div>
@@ -250,11 +235,13 @@ export default function App() {
                                   const amount = currentRank.cumulativeResources.find(r => r.name === resName)?.amount || 0;
                                   
                                   return (
-                                    <div key={`spent-${resName}`} className="flex items-center gap-2">
-                                      <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-4 h-4 object-contain" />
-                                      <div>
+                                    <div key={`spent-${resName}`} className="flex items-center gap-2.5">
+                                      <div className="w-8 h-8 flex-shrink-0 rounded-lg bg-[#1a1a2a] flex items-center justify-center border border-[#2a2a3a]/30">
+                                        <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-5 h-5 object-contain" />
+                                      </div>
+                                      <div className="min-w-0">
                                         <p className="text-sm font-mono text-white leading-none">{amount.toLocaleString()}</p>
-                                        <p className="text-[10px] uppercase opacity-60 font-sans mt-1">{resName}</p>
+                                        <p className="text-[10px] uppercase opacity-60 font-sans mt-1 leading-tight">{resName}</p>
                                       </div>
                                     </div>
                                   );
@@ -284,10 +271,12 @@ export default function App() {
 
                         <div className={`px-5 pt-2 transition-all ${isRemainingExpanded ? 'pb-5' : 'pb-4'}`}>
                           {/* Kudos Header - Always Visible */}
-                          <div className={`flex items-center gap-2 transition-all ${isRemainingExpanded ? 'mb-4' : 'mb-0'}`}>
-                            <img src="/assets/resources/Kudos.png" alt="" className="w-4 h-4 object-contain" />
+                          <div className={`flex items-center gap-3 transition-all ${isRemainingExpanded ? 'mb-4' : 'mb-0'}`}>
+                            <div className="w-8 h-8 rounded-lg bg-[#1a1a2a] flex items-center justify-center border border-[#2a2a3a]">
+                              <img src="/assets/resources/Kudos.png" alt="" className="w-5 h-5 object-contain" />
+                            </div>
                             <div>
-                              <p className="text-sm font-mono text-[#f97316] leading-none">{remainingKudos.toLocaleString()}</p>
+                              <p className="text-sm font-mono text-white leading-none font-bold">{remainingKudos.toLocaleString()}</p>
                               <p className="text-[10px] uppercase opacity-60 font-sans mt-1">Kudos</p>
                             </div>
                           </div>
@@ -309,11 +298,13 @@ export default function App() {
                                       : 0;
                                   
                                   return (
-                                    <div key={`rem-${resName}`} className="flex items-center gap-2">
-                                      <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-4 h-4 object-contain opacity-70" />
-                                      <div>
-                                        <p className="text-sm font-mono text-[#f97316] leading-none">{amount.toLocaleString()}</p>
-                                        <p className="text-[10px] uppercase opacity-60 font-sans mt-1">{resName}</p>
+                                    <div key={`rem-${resName}`} className="flex items-center gap-2.5">
+                                      <div className="w-8 h-8 flex-shrink-0 rounded-lg bg-[#1a1a2a] flex items-center justify-center border border-[#2a2a3a]/30">
+                                        <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-5 h-5 object-contain" />
+                                      </div>
+                                      <div className="min-w-0">
+                                        <p className="text-sm font-mono text-white leading-none">{amount.toLocaleString()}</p>
+                                        <p className="text-[10px] uppercase opacity-60 font-sans mt-1 leading-tight">{resName}</p>
                                       </div>
                                     </div>
                                   );
@@ -327,58 +318,7 @@ export default function App() {
                   </div>
                 </section>
               </>
-            ) : (
-              <div className="flex flex-col gap-8 py-4 items-center">
-                <div className="group relative">
-                  <div className="w-10 h-10 bg-[#1a1a2a] rounded-lg flex items-center justify-center border border-[#2a2a3a]/50">
-                    <img 
-                      src={currentRank.imageUrl} 
-                      alt="" 
-                      className="w-6 h-6 object-contain"
-                      onError={(e) => (e.currentTarget.style.display = 'none')}
-                    />
-                  </div>
-                  <div className="absolute left-full ml-4 px-2 py-1 bg-[#1a1a2a] border border-[#2a2a3a] rounded text-[10px] text-[#10b981] whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
-                    Current Rank: {currentRank.name}
-                  </div>
-                </div>
-
-                <div className="group relative flex flex-col items-center">
-                  <div className="relative w-11 h-11">
-                    <svg className="w-full h-full transform -rotate-90">
-                      <circle
-                        cx="22"
-                        cy="22"
-                        r="18"
-                        stroke="currentColor"
-                        strokeWidth="3"
-                        fill="transparent"
-                        className="text-[#1a1a2a]"
-                      />
-                      <motion.circle
-                        initial={{ strokeDashoffset: 113 }}
-                        animate={{ strokeDashoffset: 113 - (113 * progressPercentage) / 100 }}
-                        cx="22"
-                        cy="22"
-                        r="18"
-                        stroke="currentColor"
-                        strokeWidth="3"
-                        strokeDasharray={113}
-                        strokeLinecap="round"
-                        fill="transparent"
-                        className="text-[#10b981]"
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-[10px] font-mono font-black text-[#10b981]">{progressPercentage.toFixed(0)}%</span>
-                    </div>
-                  </div>
-                  <div className="absolute left-full ml-4 px-2 py-1 bg-[#1a1a2a] border border-[#2a2a3a] rounded text-[10px] text-[#10b981] whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
-                    Completion: {progressPercentage.toFixed(1)}%
-                  </div>
-                </div>
-              </div>
-            )}
+            ) : null}
           </div>
         </motion.aside>
 
@@ -455,13 +395,13 @@ export default function App() {
                               </div>
                               <span className="truncate">{rank.name}</span>
                             </div>
-                            <div className="hidden md:flex opacity-80 items-center justify-end gap-1.5">
-                              <span>{rank.kudos.toLocaleString()}</span>
-                              <img src="/assets/resources/Kudos.png" alt="" className="w-3.5 h-3.5 object-contain" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                            <div className="hidden md:flex items-center justify-end gap-2 opacity-80">
+                              <span className="font-mono text-sm leading-none">{rank.kudos.toLocaleString()}</span>
+                              <img src="/assets/resources/Kudos.png" alt="" className="w-4 h-4 object-contain" />
                             </div>
-                            <div className="opacity-80 text-right text-sm font-bold flex items-center justify-end gap-2">
-                              <span>{rank.bossResourceQty}x {rank.bossResourceName}</span>
-                              <img src={rank.bossResourceImageUrl} alt="" className="w-5 h-5 object-contain" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                            <div className="flex items-center justify-end gap-2 opacity-90">
+                              <span className="font-mono text-sm leading-none">{rank.bossResourceQty}x {rank.bossResourceName}</span>
+                              <img src={rank.bossResourceImageUrl} alt="" className="w-5 h-5 object-contain" />
                             </div>
                             <div className="flex items-center gap-3 justify-end">
                                <div className="w-20 h-1 bg-[#1a1a2a] rounded-full overflow-hidden opacity-30">
@@ -511,13 +451,13 @@ export default function App() {
                       </div>
                       <span className={`${isCurrent ? 'font-bold text-[#10b981]' : ''} truncate`}>{rank.name}</span>
                     </div>
-                    <div className="hidden md:flex opacity-80 items-center justify-end gap-1.5">
-                      <span>{rank.kudos.toLocaleString()}</span>
-                      <img src="/assets/resources/Kudos.png" alt="" className={`${isCurrent ? 'w-4 h-4' : 'w-3.5 h-3.5'} object-contain`} onError={(e) => (e.currentTarget.style.display = 'none')} />
+                    <div className="hidden md:flex items-center justify-end gap-2 opacity-90">
+                      <span className="font-mono text-sm leading-none">{rank.kudos.toLocaleString()}</span>
+                      <img src="/assets/resources/Kudos.png" alt="" className="w-4 h-4 object-contain" />
                     </div>
-                    <div className="opacity-80 text-right text-sm font-bold flex items-center justify-end gap-2">
-                      <span>{rank.bossResourceQty}x {rank.bossResourceName}</span>
-                      <img src={rank.bossResourceImageUrl} alt="" className={`${isCurrent ? 'w-6 h-6' : 'w-5 h-5'} object-contain`} onError={(e) => (e.currentTarget.style.display = 'none')} />
+                    <div className="flex items-center justify-end gap-2 opacity-100">
+                      <span className="font-mono text-sm leading-none group-hover:text-white transition-colors">{rank.bossResourceQty}x {rank.bossResourceName}</span>
+                      <img src={rank.bossResourceImageUrl} alt="" className={`${isCurrent ? 'w-6 h-6' : 'w-5 h-5'} object-contain`} />
                     </div>
                     <div className="flex items-center gap-3 justify-end">
                        <div className="w-20 h-2 bg-[#1a1a2a] rounded-full overflow-hidden border border-[#2a2a3a]/50">
