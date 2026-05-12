@@ -96,10 +96,6 @@ export default function App() {
       .catch(() => {});
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem('hades-rank-id', currentRankId.toString());
-  }, [currentRankId]);
-
   const currentRank = useMemo(() => 
     RANKS.find((r) => r.id === currentRankId) || RANKS[0], 
   [currentRankId]);
@@ -118,6 +114,34 @@ export default function App() {
   [currentRank]);
 
   const remainingKudos = TOTAL_KUDOS - currentRank.cumulativeKudos;
+  const prevRemainingKudosRef = useRef(remainingKudos);
+  
+  const spentKudos = currentRank.cumulativeKudos;
+  const prevSpentKudosRef = useRef(spentKudos);
+
+  useEffect(() => {
+    if (remainingKudos === 0) {
+      setIsRemainingExpanded(false);
+    } else if (prevRemainingKudosRef.current === 0 && remainingKudos > 0) {
+      // Only auto-expand if we transition from 0 back to having remaining kudos
+      setIsRemainingExpanded(true);
+    }
+    prevRemainingKudosRef.current = remainingKudos;
+  }, [remainingKudos]);
+
+  useEffect(() => {
+    if (spentKudos === 0) {
+      setIsSpentExpanded(false);
+    } else if (prevSpentKudosRef.current === 0 && spentKudos > 0) {
+      // Only auto-expand if we transition from 0 to having spent kudos
+      setIsSpentExpanded(true);
+    }
+    prevSpentKudosRef.current = spentKudos;
+  }, [spentKudos]);
+
+  useEffect(() => {
+    localStorage.setItem('hades-rank-id', currentRankId.toString());
+  }, [currentRankId]);
 
   const filteredRanks = useMemo(() => 
     RANKS.filter((r) => 
@@ -255,17 +279,19 @@ export default function App() {
                             </div>
                           </button>
 
-                          <div className={`px-4 pt-2 transition-all ${isSpentExpanded ? 'pb-5' : 'pb-4'}`}>
-                            {/* Kudos Header - Always Visible */}
-                            <div className={`flex items-start gap-3 transition-all ${isSpentExpanded ? 'mb-5' : 'mb-0'}`}>
-                              <div className="w-[34px] h-[34px] rounded-lg bg-[#1a1a2a] flex items-center justify-center border border-[#2a2a3a] flex-shrink-0">
-                                <img src="/assets/resources/Kudos.png" alt="" className="w-5 h-5 object-contain" />
+                          <div className={`px-4 transition-all ${isSpentExpanded ? 'pt-2 pb-5' : (spentKudos > 0 || currentRank.cumulativeResources.length > 0 ? 'pt-2 pb-4' : 'p-0 h-0')}`}>
+                            {/* Kudos Header */}
+                            {spentKudos > 0 && (
+                              <div className={`flex items-start gap-3 transition-all ${isSpentExpanded ? 'mb-5' : 'mb-0'}`}>
+                                <div className="w-[34px] h-[34px] rounded-lg bg-[#1a1a2a] flex items-center justify-center border border-[#2a2a3a] flex-shrink-0">
+                                  <img src="/assets/resources/Kudos.png" alt="" className="w-5 h-5 object-contain" />
+                                </div>
+                                <div className="min-w-0 pt-0.5">
+                                  <p className="text-base text-white leading-none font-bold tracking-tight">{spentKudos.toLocaleString()}</p>
+                                  <p className="text-[10px] uppercase opacity-50 font-sans mt-1.5 tracking-wider">Kudos</p>
+                                </div>
                               </div>
-                              <div className="min-w-0 pt-0.5">
-                                <p className="text-base text-white leading-none font-bold tracking-tight">{currentRank.cumulativeKudos.toLocaleString()}</p>
-                                <p className="text-[10px] uppercase opacity-50 font-sans mt-1.5 tracking-wider">Kudos</p>
-                              </div>
-                            </div>
+                            )}
 
                             <motion.div
                               initial={false}
@@ -314,17 +340,19 @@ export default function App() {
                             </div>
                           </button>
 
-                          <div className={`px-4 pt-2 transition-all ${isRemainingExpanded ? 'pb-5' : 'pb-4'}`}>
-                            {/* Kudos Header - Always Visible */}
-                            <div className={`flex items-start gap-3 transition-all ${isRemainingExpanded ? 'mb-5' : 'mb-0'}`}>
-                              <div className="w-[34px] h-[34px] rounded-lg bg-[#1a1a2a] flex items-center justify-center border border-[#2a2a3a] flex-shrink-0">
-                                <img src="/assets/resources/Kudos.png" alt="" className="w-5 h-5 object-contain" />
+                          <div className={`px-4 transition-all ${isRemainingExpanded ? 'pt-2 pb-5' : (remainingKudos > 0 || remainingResources.length > 0 ? 'pt-2 pb-4' : 'p-0 h-0')}`}>
+                            {/* Kudos Header */}
+                            {remainingKudos > 0 && (
+                              <div className={`flex items-start gap-3 transition-all ${isRemainingExpanded ? 'mb-5' : 'mb-0'}`}>
+                                <div className="w-[34px] h-[34px] rounded-lg bg-[#1a1a2a] flex items-center justify-center border border-[#2a2a3a] flex-shrink-0">
+                                  <img src="/assets/resources/Kudos.png" alt="" className="w-5 h-5 object-contain" />
+                                </div>
+                                <div className="min-w-0 pt-0.5">
+                                  <p className="text-base text-white leading-none font-bold tracking-tight">{remainingKudos.toLocaleString()}</p>
+                                  <p className="text-[10px] uppercase opacity-50 font-sans mt-1.5 tracking-wider">Kudos</p>
+                                </div>
                               </div>
-                              <div className="min-w-0 pt-0.5">
-                                <p className="text-base text-white leading-none font-bold tracking-tight">{remainingKudos.toLocaleString()}</p>
-                                <p className="text-[10px] uppercase opacity-50 font-sans mt-1.5 tracking-wider">Kudos</p>
-                              </div>
-                            </div>
+                            )}
 
                             <motion.div
                               initial={false}
@@ -335,11 +363,9 @@ export default function App() {
                               className="overflow-hidden"
                             >
                               <div className="grid grid-cols-2 gap-y-4 gap-x-4 pt-4 border-t border-[#2a2a3a]/50 w-full">
-                                {['Feather', 'Golden Apple', 'Pearl', 'Wool', 'Moon Dust', 'Cinder', 'Tears', 'Nightmare', 'Void Lens', 'Zodiac Sand'].map((resName) => {
-                                  const amount = totalResources.find(r => r.name === resName)?.amount 
-                                      ? (totalResources.find(r => r.name === resName)!.amount - (currentRank.cumulativeResources.find(r => r.name === resName)?.amount || 0))
-                                      : 0;
-                                  if (amount === 0) return null;
+                                {remainingResources.map((resource) => {
+                                  const resName = resource.name;
+                                  const amount = resource.amount;
                                   
                                   return (
                                     <div key={`rem-${resName}`} className="flex items-start gap-3 min-w-0">
