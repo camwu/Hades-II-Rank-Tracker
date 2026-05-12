@@ -19,7 +19,8 @@ import {
   PanelLeftOpen,
   ChevronLeft,
   ChevronRight,
-  History
+  History,
+  RotateCcw
 } from 'lucide-react';
 import { RANKS, TOTAL_KUDOS, Rank, RESOURCE_ORDER } from './constants';
 import { 
@@ -41,15 +42,31 @@ export default function App() {
       const parsed = parseInt(saved);
       if (RANKS.some(r => r.id === parsed)) return parsed;
     }
-    return 1;
+    return 0;
   });
   const [searchQuery, setSearchQuery] = useState('');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isHistoryExpanded, setIsHistoryExpanded] = useState(false);
   const [isSpentExpanded, setIsSpentExpanded] = useState(true);
   const [isRemainingExpanded, setIsRemainingExpanded] = useState(true);
+  const [isResetConfirming, setIsResetConfirming] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string>('');
   const historyContainerRef = useRef<HTMLDivElement>(null);
+
+  const handleResetProgress = () => {
+    if (!isResetConfirming) {
+      setIsResetConfirming(true);
+      // Auto-cancel after 3 seconds if not clicked again
+      setTimeout(() => setIsResetConfirming(false), 3000);
+      return;
+    }
+    
+    localStorage.removeItem('hades-rank-id');
+    setCurrentRankId(0);
+    setIsHistoryExpanded(false);
+    setIsResetConfirming(false);
+    setSearchQuery('');
+  };
   
   useEffect(() => {
     if (isHistoryExpanded && historyContainerRef.current) {
@@ -140,8 +157,22 @@ export default function App() {
             <h1 className="text-2xl md:text-3xl font-sans font-black tracking-wider text-[#10b981] uppercase truncate">Hades II Rank Tracker</h1>
           </div>
 
-          <div className="flex items-center gap-6">
-            <div className="relative group w-40 md:w-80">
+          <div className="flex items-center gap-4 md:gap-6">
+            <button 
+              onClick={handleResetProgress}
+              className={`flex items-center gap-2 px-3 py-2 border rounded-lg transition-all text-sm font-bold uppercase tracking-wider group ${
+                isResetConfirming 
+                  ? 'bg-[#f87171] border-[#f87171] text-white' 
+                  : 'bg-[#161625] border-[#2a2a3a] text-[#d1d1e0]/50 hover:text-[#f87171] hover:border-[#f87171]/50'
+              }`}
+              title={isResetConfirming ? "Click again to confirm reset" : "Reset All Progress"}
+            >
+              <RotateCcw className={`w-3.5 h-3.5 transition-transform ${isResetConfirming ? 'animate-spin' : 'group-hover:rotate-[-45deg]'}`} />
+              <span className="hidden sm:inline">
+                {isResetConfirming ? "Confirm Reset?" : "Reset Progress"}
+              </span>
+            </button>
+            <div className="relative group w-40 md:w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#10b981]/50" />
               <input 
                 id="search-input"
@@ -408,12 +439,24 @@ export default function App() {
                               <span className="text-base truncate">{rank.name}</span>
                             </div>
                             <div className="hidden md:flex md:col-span-3 items-center justify-end gap-2 opacity-80">
-                              <span className="text-sm leading-none">{rank.kudos.toLocaleString()}</span>
-                              <img src="/assets/resources/Kudos.png" alt="" className="w-4 h-4 object-contain" />
+                              {rank.id > 0 ? (
+                                <>
+                                  <span className="text-sm leading-none">{rank.kudos.toLocaleString()}</span>
+                                  <img src="/assets/resources/Kudos.png" alt="" className="w-4 h-4 object-contain" />
+                                </>
+                              ) : (
+                                <span className="text-sm opacity-30">—</span>
+                              )}
                             </div>
                             <div className="col-span-5 md:col-span-3 flex items-center justify-end gap-3 opacity-90 min-w-0">
-                               <span className="text-sm leading-tight text-right">{rank.bossResourceQty}x {rank.bossResourceName}</span>
-                               <img src={rank.bossResourceImageUrl} alt="" className="w-5 h-5 object-contain flex-shrink-0" />
+                               {rank.id > 0 ? (
+                                 <>
+                                   <span className="text-sm leading-tight text-right">{rank.bossResourceQty}x {rank.bossResourceName}</span>
+                                   <img src={rank.bossResourceImageUrl} alt="" className="w-5 h-5 object-contain flex-shrink-0" />
+                                 </>
+                               ) : (
+                                 <span className="text-sm opacity-30">—</span>
+                               )}
                              </div>
                             <div className="col-span-3 md:col-span-3 flex items-center gap-3 justify-end">
                                <div className="w-20 h-1 bg-[#1a1a2a] rounded-full overflow-hidden opacity-30">
@@ -441,11 +484,11 @@ export default function App() {
                     onClick={() => setCurrentRankId(rank.id)}
                     className={`
                       grid grid-cols-[repeat(13,minmax(0,1fr))] gap-4 transition-all cursor-pointer group items-center
-                      ${isCurrent ? 'bg-[#1a1a2a] border-l-4 border-[#10b981] text-white shadow-[inset_4px_0_15_rgba(16,185,129,0.1)] py-5 px-10 text-sm' : 'bg-transparent py-3 px-10 text-sm text-[#d1d1e0]/80 border-l border-transparent hover:bg-[#1a1a2a]/40'}
+                      ${isCurrent ? 'bg-[#1a1a2a] border-l-4 border-[#10b981] text-white shadow-[inset_4px_0_15_rgba(16,185,129,0.1)] py-4 px-10 text-sm' : 'bg-transparent py-2 px-10 text-sm text-[#d1d1e0]/80 border-l border-transparent hover:bg-[#1a1a2a]/40'}
                     `}
                   >
                     <div className="col-span-5 md:col-span-4 flex items-center gap-3">
-                      <div className="relative w-8 h-8 flex items-center justify-center">
+                      <div className="relative w-11 h-11 flex items-center justify-center">
                         <img 
                           src={rank.imageUrl} 
                           alt="" 
@@ -460,12 +503,24 @@ export default function App() {
                       <span className={`text-base ${isCurrent ? 'font-bold text-[#10b981]' : ''} truncate`}>{rank.name}</span>
                     </div>
                     <div className="hidden md:flex md:col-span-3 items-center justify-end gap-2 opacity-90">
-                      <span className="text-sm leading-none">{rank.kudos.toLocaleString()}</span>
-                      <img src="/assets/resources/Kudos.png" alt="" className="w-4 h-4 object-contain" />
+                      {rank.id > 0 ? (
+                        <>
+                          <span className="text-sm leading-none">{rank.kudos.toLocaleString()}</span>
+                          <img src="/assets/resources/Kudos.png" alt="" className="w-4 h-4 object-contain" />
+                        </>
+                      ) : (
+                        <span className="text-sm opacity-30">—</span>
+                      )}
                     </div>
                     <div className="col-span-5 md:col-span-3 flex items-center justify-end gap-3 opacity-100 min-w-0">
-                      <span className="text-sm leading-tight group-hover:text-white transition-colors text-right">{rank.bossResourceQty}x {rank.bossResourceName}</span>
-                      <img src={rank.bossResourceImageUrl} alt="" className={`${isCurrent ? 'w-6 h-6' : 'w-5 h-5'} object-contain flex-shrink-0`} />
+                      {rank.id > 0 ? (
+                        <>
+                          <span className="text-sm leading-tight group-hover:text-white transition-colors text-right">{rank.bossResourceQty}x {rank.bossResourceName}</span>
+                          <img src={rank.bossResourceImageUrl} alt="" className={`${isCurrent ? 'w-6 h-6' : 'w-5 h-5'} object-contain flex-shrink-0`} />
+                        </>
+                      ) : (
+                        <span className="text-sm opacity-30">—</span>
+                      )}
                     </div>
                     <div className="col-span-3 md:col-span-3 flex items-center gap-3 justify-end">
                        <div className="w-20 h-2 bg-[#1a1a2a] rounded-full overflow-hidden border border-[#2a2a3a]/50">

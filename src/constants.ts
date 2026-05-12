@@ -20,6 +20,7 @@ export interface Rank {
 }
 
 export const RANK_COLORS: Record<string, string> = {
+  "Unranked": "#334155",  // Slate
   "Wraith": "#64748b",   // Grey
   "Specter": "#b45309",  // Bronze
   "Revenant": "#ffffff", // White
@@ -37,7 +38,8 @@ const LEVEL_RESOURCES: Record<number, string> = {
   4: "Tears",
   3: "Nightmare",
   2: "Void Lens",
-  1: "Zodiac Sand"
+  1: "Zodiac Sand",
+  0: "None"
 };
 
 export const RESOURCE_ORDER = [
@@ -111,6 +113,7 @@ const RAW_DATA = [
 ];
 
 function toRoman(num: number): string {
+  if (num === 0) return "";
   const lookup: Record<string, number> = {
     X: 10, IX: 9, V: 5, IV: 4, I: 1
   };
@@ -128,7 +131,7 @@ function processRanks(): Rank[] {
   let cumulativeKudos = 0;
   const resourceTotals: Record<string, number> = {};
   
-  return RAW_DATA.map((item, index) => {
+  const ranks: Rank[] = RAW_DATA.map((item, index) => {
     cumulativeKudos += item.cost;
     const name = `${item.group} ${toRoman(item.level)}`;
     const resourceQty = GROUP_QUANTITY[item.group] || 1;
@@ -156,6 +159,23 @@ function processRanks(): Rank[] {
       imageUrl: `/assets/ranks/${name.replace(/\s+/g, '_')}.png`
     };
   });
+
+  const unranked: Rank = {
+    id: 0,
+    name: "Unranked",
+    colorName: "Unranked",
+    colorHex: RANK_COLORS["Unranked"],
+    kudos: 0,
+    resources: [],
+    bossResourceName: "None",
+    bossResourceQty: 0,
+    bossResourceImageUrl: "/assets/resources/None.png",
+    cumulativeKudos: 0,
+    cumulativeResources: [],
+    imageUrl: "/assets/ranks/Unranked.png"
+  };
+
+  return [unranked, ...ranks];
 }
 
 export const RANKS = processRanks();
