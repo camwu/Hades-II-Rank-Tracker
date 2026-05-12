@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useMemo, useEffect, useRef, memo } from 'react';
+import { useState, useMemo, useEffect, useRef, memo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Trophy, 
@@ -193,6 +193,11 @@ export default function App() {
   }, []);
 
   const isMobile = windowWidth < 1024;
+  
+  const handleRankClick = useCallback((id: number) => {
+    setCurrentRankId(id);
+    if (isMobile) setIsMobileStatsOpen(false);
+  }, [isMobile]);
 
   const handleResetProgress = () => {
     if (!isResetConfirming) {
@@ -670,10 +675,7 @@ export default function App() {
                           isCurrent={false}
                           isCompleted={true}
                           isHistoryExpanded={isHistoryExpanded}
-                          onClick={(id) => {
-                            setCurrentRankId(id);
-                            if (isMobile) setIsMobileStatsOpen(false);
-                          }}
+                          onClick={handleRankClick}
                           totalKudos={TOTAL_KUDOS}
                         />
                       ))}
@@ -689,10 +691,7 @@ export default function App() {
                   rank={rank}
                   isCurrent={rank.id === currentRankId}
                   isCompleted={false}
-                  onClick={(id) => {
-                    setCurrentRankId(id);
-                    if (isMobile) setIsMobileStatsOpen(false);
-                  }}
+                  onClick={handleRankClick}
                   totalKudos={TOTAL_KUDOS}
                 />
               ))}
