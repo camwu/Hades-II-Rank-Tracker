@@ -1,6 +1,6 @@
 # Hades II Rank Tracker
 
-![Hades II Rank Tracker Screenshot](/assets/screenshot.png)
+![Hades II Rank Tracker Screenshot](public/assets/screenshot.png)
 
 A simple web app designed to help players track their progress towards unlocking all ranks in Hades II.
 
