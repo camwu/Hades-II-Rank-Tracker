@@ -58,6 +58,7 @@ const RankRow = memo(({
               src={rank.imageUrl} 
               alt="" 
               className="w-full h-full object-contain z-10"
+              loading="lazy"
               style={{ filter: rank.id > 0 ? `drop-shadow(0 0 10px ${rank.colorHex}33)` : 'none' }}
               onError={(e) => (e.currentTarget.style.display = 'none')}
             />
@@ -68,7 +69,7 @@ const RankRow = memo(({
           {rank.id > 0 ? (
             <>
               <span className="text-[10px] md:text-sm leading-none">{rank.kudos.toLocaleString()}</span>
-              <img src="/assets/resources/Kudos.png" alt="" className="w-3.5 h-3.5 md:w-4 md:h-4 object-contain" />
+              <img src="/assets/resources/Kudos.png" alt="" className="w-3.5 h-3.5 md:w-4 md:h-4 object-contain" loading="lazy" />
             </>
           ) : (
             <span className="text-sm opacity-30">—</span>
@@ -80,7 +81,7 @@ const RankRow = memo(({
               <span className="text-[10px] md:text-sm leading-tight text-right truncate">
                 {rank.bossResourceQty}x <span className="hidden lg:inline">{rank.bossResourceName}</span>
               </span>
-              <img src={rank.bossResourceImageUrl} alt="" className="w-4 h-4 md:w-5 md:h-5 object-contain flex-shrink-0" />
+              <img src={rank.bossResourceImageUrl} alt="" className="w-4 h-4 md:w-5 md:h-5 object-contain flex-shrink-0" loading="lazy" />
             </>
           ) : (
             <span className="text-sm opacity-30">—</span>
@@ -114,6 +115,7 @@ const RankRow = memo(({
             src={rank.imageUrl} 
             alt="" 
             className="w-full h-full object-contain relative z-10 transition-transform group-hover:scale-110"
+            loading="lazy"
             style={{ filter: rank.id > 0 ? `drop-shadow(0 0 10px ${rank.colorHex}33)` : 'none' }}
             onError={(e) => (e.currentTarget.style.display = 'none')}
           />
@@ -136,7 +138,7 @@ const RankRow = memo(({
             <span className="text-[11px] md:text-sm leading-tight group-hover:text-white transition-colors text-right truncate">
               {rank.bossResourceQty}x <span className="hidden lg:inline">{rank.bossResourceName}</span>
             </span>
-            <img src={rank.bossResourceImageUrl} alt="" className={`${isCurrent ? 'w-5 h-5 md:w-6 md:h-6' : 'w-4 h-4 md:w-5 md:h-5'} object-contain flex-shrink-0`} />
+            <img src={rank.bossResourceImageUrl} alt="" className={`${isCurrent ? 'w-5 h-5 md:w-6 md:h-6' : 'w-4 h-4 md:w-5 md:h-5'} object-contain flex-shrink-0`} loading="lazy" />
           </>
         ) : (
           <span className="text-[10px] uppercase opacity-40 font-black tracking-widest">—</span>
@@ -337,6 +339,7 @@ export default function App() {
               src="/favicon.png" 
               alt="" 
               className="w-8 h-8 md:w-10 md:h-10 object-contain drop-shadow-[0_0_15px_rgba(16,185,129,0.4)]" 
+              loading="lazy"
             />
             <h1 className="text-xl lg:text-3xl font-sans font-black tracking-wider text-hades-accent uppercase truncate">
               Hades II Rank Tracker
@@ -497,7 +500,7 @@ export default function App() {
                             {spentKudos > 0 && (
                               <div className={`flex items-start gap-3 transition-all ${isSpentExpanded ? 'mb-5' : 'mb-0'}`}>
                                 <div className="w-[34px] h-[34px] rounded-lg bg-hades-border flex items-center justify-center border border-hades-border-light flex-shrink-0">
-                                  <img src="/assets/resources/Kudos.png" alt="" className="w-5 h-5 object-contain" />
+                                  <img src="/assets/resources/Kudos.png" alt="" className="w-5 h-5 object-contain" loading="lazy" />
                                 </div>
                                 <div className="min-w-0 pt-0.5">
                                   <p className="text-base text-white leading-none font-bold tracking-tight">{spentKudos.toLocaleString()}</p>
@@ -522,7 +525,7 @@ export default function App() {
                                   return (
                                     <div key={`spent-${resName}`} className="flex items-start gap-3 min-w-0">
                                       <div className="w-[32px] h-[32px] flex-shrink-0 rounded-lg bg-hades-border flex items-center justify-center border border-hades-border-light/30">
-                                        <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-5 h-5 object-contain" />
+                                        <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-5 h-5 object-contain" loading="lazy" />
                                       </div>
                                       <div className="min-w-0 pt-0.5">
                                         <p className="text-sm text-white leading-none font-bold">{amount.toLocaleString()}</p>
@@ -558,7 +561,7 @@ export default function App() {
                             {remainingKudos > 0 && (
                               <div className={`flex items-start gap-3 transition-all ${isRemainingExpanded ? 'mb-5' : 'mb-0'}`}>
                                 <div className="w-[34px] h-[34px] rounded-lg bg-hades-border flex items-center justify-center border border-hades-border-light flex-shrink-0">
-                                  <img src="/assets/resources/Kudos.png" alt="" className="w-5 h-5 object-contain" />
+                                  <img src="/assets/resources/Kudos.png" alt="" className="w-5 h-5 object-contain" loading="lazy" />
                                 </div>
                                 <div className="min-w-0 pt-0.5">
                                   <p className="text-base text-white leading-none font-bold tracking-tight">{remainingKudos.toLocaleString()}</p>
@@ -584,7 +587,7 @@ export default function App() {
                                   return (
                                     <div key={`rem-${resName}`} className="flex items-start gap-3 min-w-0">
                                       <div className="w-[32px] h-[32px] flex-shrink-0 rounded-lg bg-hades-border flex items-center justify-center border border-hades-border-light/30">
-                                        <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-5 h-5 object-contain" />
+                                        <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-5 h-5 object-contain" loading="lazy" />
                                       </div>
                                       <div className="min-w-0 pt-0.5">
                                         <p className="text-sm text-white leading-none font-bold">{amount.toLocaleString()}</p>
