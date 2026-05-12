@@ -12,7 +12,7 @@ export default defineConfig(({mode}) => {
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['favicon.png', 'assets/**/*'],
+        includeAssets: ['favicon.png', 'pwa-192x192.png', 'assets/**/*'],
         manifest: {
           name: 'Hades II Rank Tracker',
           short_name: 'Hades II Ranks',
@@ -22,14 +22,16 @@ export default defineConfig(({mode}) => {
           display: 'standalone',
           icons: [
             {
-              src: 'favicon.png',
+              src: 'pwa-192x192.png',
               sizes: '192x192',
-              type: 'image/png'
+              type: 'image/png',
+              purpose: 'any'
             },
             {
-              src: 'favicon.png',
-              sizes: '512x512',
-              type: 'image/png'
+              src: 'pwa-192x192.png',
+              sizes: '192x192',
+              type: 'image/png',
+              purpose: 'maskable'
             }
           ]
         }
