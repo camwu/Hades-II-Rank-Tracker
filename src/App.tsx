@@ -436,7 +436,7 @@ export default function App() {
                                   style={{ backgroundColor: rank.colorHex }}
                                 />
                               </div>
-                              <span className="text-base truncate">{rank.name}</span>
+                              <span className="text-base whitespace-nowrap">{rank.name}</span>
                             </div>
                             <div className="hidden md:flex md:col-span-3 items-center justify-end gap-2 opacity-80">
                               {rank.id > 0 ? (
@@ -500,7 +500,7 @@ export default function App() {
                           style={{ backgroundColor: rank.colorHex }}
                         />
                       </div>
-                      <span className={`text-base ${isCurrent ? 'font-bold text-[#10b981]' : ''} truncate`}>{rank.name}</span>
+                      <span className={`text-base ${isCurrent ? 'font-bold text-[#10b981]' : ''} whitespace-nowrap`}>{rank.name}</span>
                     </div>
                     <div className="hidden md:flex md:col-span-3 items-center justify-end gap-2 opacity-90">
                       {rank.id > 0 ? (
