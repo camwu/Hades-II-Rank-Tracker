@@ -39,6 +39,17 @@ import {
 
 export default function App() {
   const [currentRankId, setCurrentRankId] = useState<number>(() => {
+    // 1. Check URL first
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const rankParam = urlParams.get('rank');
+      if (rankParam) {
+        const parsed = parseInt(rankParam);
+        if (RANKS.some(r => r.id === parsed)) return parsed;
+      }
+    }
+
+    // 2. Fallback to localStorage
     const saved = localStorage.getItem('hades-rank-id');
     if (saved) {
       const parsed = parseInt(saved);
@@ -154,6 +165,15 @@ export default function App() {
 
   useEffect(() => {
     localStorage.setItem('hades-rank-id', currentRankId.toString());
+    
+    // Sync to URL
+    const url = new URL(window.location.href);
+    if (currentRankId === 0) {
+      url.searchParams.delete('rank');
+    } else {
+      url.searchParams.set('rank', currentRankId.toString());
+    }
+    window.history.replaceState({}, '', url);
   }, [currentRankId]);
 
   const filteredRanks = useMemo(() => 
