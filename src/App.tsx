@@ -227,16 +227,26 @@ export default function App() {
   }, [isHistoryExpanded, currentRankId]);
 
   useEffect(() => {
+    // 1. Check if we already fetched it this session
+    const cachedDate = sessionStorage.getItem('hades-last-updated');
+    if (cachedDate) {
+      setLastUpdated(cachedDate);
+      return;
+    }
+
+    // 2. If not, fetch it and save it
     fetch('https://api.github.com/repos/camwu/hades-2-rank-tracker/commits/main')
       .then(res => res.json())
       .then(data => {
         if (data.commit?.committer?.date) {
           const date = new Date(data.commit.committer.date);
-          setLastUpdated(date.toLocaleDateString(undefined, { 
+          const formatted = date.toLocaleDateString(undefined, { 
             year: 'numeric', 
             month: 'long', 
             day: 'numeric' 
-          }));
+          });
+          sessionStorage.setItem('hades-last-updated', formatted);
+          setLastUpdated(formatted);
         }
       })
       .catch(() => {});
