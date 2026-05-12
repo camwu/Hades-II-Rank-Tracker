@@ -10,8 +10,9 @@ You can access the live application here: [Hades II Rank Tracker](https://hades-
 ## ✨ Features
 - **Progress Tracking:** Monitor your current rank and track progress towards completion of all ranks.
 - **Resource Management:** View exactly how many Kudos and specific resources are required for your next rank and for all remaining ranks.
-- **Persistent Progress:** Your current rank is saved locally so you can resume tracking at any time.
 - **Search & Filter:** Quickly find specific ranks by name or their unique resource requirements.
+- **Persistent Progress:** Your current rank is saved locally and synced to the URL, allowing you to bookmark your progress or share it between devices.
+- **PWA Ready:** Install the app on your mobile device for a native-like experience (standalone view without browser bars).
 
 ## 🛠️ How to Use
 1. **Select Your Rank:** Click on any rank in the list to set it as your current rank.
@@ -24,6 +25,7 @@ You can access the live application here: [Hades II Rank Tracker](https://hades-
 - React 18+
 - TypeScript
 - Tailwind CSS
+- Vite PWA (Progressive Web App support)
 - Framer Motion (for animations)
 - Lucide React (for iconography)
 
