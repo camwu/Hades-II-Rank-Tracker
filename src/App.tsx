@@ -162,7 +162,7 @@ export default function App() {
       const rankParam = urlParams.get('rank');
       if (rankParam) {
         const parsed = parseInt(rankParam);
-        if (RANKS.some(r => r.id === parsed)) return parsed;
+        if (parsed >= 0 && parsed < RANKS.length) return parsed;
       }
     }
 
@@ -170,7 +170,7 @@ export default function App() {
     const saved = localStorage.getItem('hades-rank-id');
     if (saved) {
       const parsed = parseInt(saved);
-      if (RANKS.some(r => r.id === parsed)) return parsed;
+      if (parsed >= 0 && parsed < RANKS.length) return parsed;
     }
     return 0;
   });
