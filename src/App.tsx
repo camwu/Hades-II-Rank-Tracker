@@ -25,17 +25,6 @@ import {
   Menu
 } from 'lucide-react';
 import { RANKS, TOTAL_KUDOS, TOTAL_RESOURCES, Rank, RESOURCE_ORDER } from './constants';
-import { 
-  PieChart, 
-  Pie, 
-  Cell, 
-  ResponsiveContainer, 
-  Tooltip as RechartsTooltip,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis
-} from 'recharts';
 
 export default function App() {
   const [currentRankId, setCurrentRankId] = useState<number>(() => {
