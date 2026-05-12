@@ -3,17 +3,29 @@
 
 @theme {
   --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+
+  --color-hades-bg: #06060a;
+  --color-hades-bg-dark: #0c0c14;
+  --color-hades-bg-light: #12121e;
+  --color-hades-bg-main: #08080c;
+  --color-hades-panel: #161625;
+  --color-hades-accent: #10b981;
+  --color-hades-orange: #f97316;
+  --color-hades-red: #f87171;
+  --color-hades-border: #1a1a25;
+  --color-hades-border-light: #2a2a3a;
+  --color-hades-text: #d1d1e0;
 }
 
 @layer base {
   body {
-    @apply bg-[#0c0c12] text-[#d1d1e0];
+    @apply bg-hades-bg text-hades-text;
   }
 
   /* Global Scrollbar Styling */
   * {
     scrollbar-width: thin;
-    scrollbar-color: #2a2a3a transparent;
+    scrollbar-color: var(--color-hades-border-light) transparent;
   }
 
   ::-webkit-scrollbar {
@@ -26,11 +38,11 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #2a2a3a;
+    background: var(--color-hades-border-light);
     border-radius: 10px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #10b981;
+    background: var(--color-hades-accent);
   }
 }

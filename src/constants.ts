@@ -180,3 +180,4 @@ function processRanks(): Rank[] {
 
 export const RANKS = processRanks();
 export const TOTAL_KUDOS = RANKS[RANKS.length - 1].cumulativeKudos;
+export const TOTAL_RESOURCES = RANKS[RANKS.length - 1].cumulativeResources;
