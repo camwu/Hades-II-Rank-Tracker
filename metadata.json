@@ -1,6 +1,6 @@
 {
   "name": "Hades II Rank Tracker",
-  "description": "Simple web app to visually track progress in unlocking Hades II ranks",
+  "description": "Track your progress towards unlocking all ranks in Hades II. Visualize costs, resources, and statistics.",
   "icon": "public/favicon.png",
   "requestFramePermissions": [],
   "majorCapabilities": []
