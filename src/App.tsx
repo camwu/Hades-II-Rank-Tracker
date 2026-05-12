@@ -190,7 +190,7 @@ export default function App() {
           <div className="flex items-center gap-4 md:gap-6">
             <button 
               onClick={handleResetProgress}
-              className={`flex items-center gap-2 px-3 py-2 border rounded-lg transition-all text-sm font-bold uppercase tracking-wider group ${
+              className={`flex items-center gap-2 px-3 py-2 border rounded-lg transition-all text-sm font-bold uppercase tracking-wider group outline-none focus-visible:ring-2 focus-visible:ring-hades-red focus-visible:ring-offset-2 focus-visible:ring-offset-hades-bg focus-visible:bg-hades-red/20 ${
                 isResetConfirming 
                   ? 'bg-hades-red border-hades-red text-white' 
                   : 'bg-hades-panel border-hades-border-light text-hades-text/50 hover:text-hades-red hover:border-hades-red/50'
@@ -222,7 +222,7 @@ export default function App() {
                       setSearchQuery('');
                       document.getElementById('search-input')?.focus();
                     }}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-hades-border-light rounded-full transition-colors text-hades-text/50 hover:text-white"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-hades-border-light rounded-full transition-colors text-hades-text/50 hover:text-white outline-none focus-visible:ring-2 focus-visible:ring-hades-accent focus-visible:bg-hades-border-light"
                   >
                     <X className="w-3.5 h-3.5" />
                   </motion.button>
@@ -244,7 +244,7 @@ export default function App() {
             {/* Toggle Button Integrated into Divider */}
             <button 
               onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-              className="absolute -right-3 top-[21px] z-30 flex items-center justify-center w-6 h-6 bg-hades-bg-dark border border-hades-border rounded-md shadow-lg hover:border-hades-accent/50 transition-all text-hades-accent/60 hover:text-hades-accent"
+              className="absolute -right-3 top-[21px] z-30 flex items-center justify-center w-6 h-6 bg-hades-bg-dark border border-hades-border rounded-md shadow-lg hover:border-hades-accent/50 transition-all text-hades-accent/60 hover:text-hades-accent outline-none focus-visible:ring-2 focus-visible:ring-hades-accent focus-visible:border-hades-accent"
               title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
             >
               {isSidebarCollapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
@@ -272,7 +272,7 @@ export default function App() {
 
                           <button 
                             onClick={() => setIsSpentExpanded(!isSpentExpanded)}
-                            className="w-full flex items-center justify-between px-4 py-3 hover:bg-hades-border-light/30 transition-colors group/header"
+                            className="w-full flex items-center justify-between px-4 py-3 hover:bg-hades-border-light/30 transition-colors group/header outline-none focus-visible:bg-hades-border-light/50 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-hades-accent/40"
                           >
                             <div className="flex items-center gap-2">
                               <Target className="w-3 h-3 text-hades-accent" />
@@ -333,7 +333,7 @@ export default function App() {
 
                           <button 
                             onClick={() => setIsRemainingExpanded(!isRemainingExpanded)}
-                            className="w-full flex items-center justify-between px-4 py-3 hover:bg-hades-border-light/30 transition-colors group/header"
+                            className="w-full flex items-center justify-between px-4 py-3 hover:bg-hades-border-light/30 transition-colors group/header outline-none focus-visible:bg-hades-border-light/50 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-hades-accent/40"
                           >
                             <div className="flex items-center gap-2">
                               <TrendingUp className="w-3 h-3 text-hades-orange" />
@@ -418,7 +418,7 @@ export default function App() {
                 <div className="sticky top-0 bg-hades-bg-light border-b border-hades-border-light z-20">
                   <button 
                     onClick={() => setIsHistoryExpanded(!isHistoryExpanded)}
-                    className="w-full flex items-center justify-between p-4 px-10 hover:bg-hades-border/40 transition-colors group"
+                    className="w-full flex items-center justify-between p-4 px-10 hover:bg-hades-border/40 transition-colors group outline-none focus-visible:bg-hades-border/60 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-hades-accent/40"
                   >
                     <div className="flex items-center gap-3">
                       <History className="w-4 h-4 text-hades-text opacity-30" />
@@ -449,11 +449,13 @@ export default function App() {
                       {completedRanks.map((rank) => {
                         const progress = (rank.cumulativeKudos / TOTAL_KUDOS) * 100;
                         return (
-                          <div 
+                          <button 
                             key={rank.id}
                             id={`rank-row-${rank.id}`}
                             onClick={() => setCurrentRankId(rank.id)}
-                            className="grid grid-cols-[repeat(13,minmax(0,1fr))] gap-4 py-2.5 px-10 text-sm opacity-30 italic hover:opacity-100 hover:bg-hades-border/20 cursor-pointer transition-all items-center"
+                            tabIndex={isHistoryExpanded ? 0 : -1}
+                            aria-hidden={!isHistoryExpanded}
+                            className="grid grid-cols-[repeat(13,minmax(0,1fr))] gap-4 py-2.5 px-10 text-sm opacity-30 italic hover:opacity-100 hover:bg-hades-border/20 focus-visible:opacity-100 focus-visible:not-italic focus-visible:bg-hades-accent/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-hades-accent/40 cursor-pointer transition-all items-center w-full text-left outline-none"
                           >
                             <div className="col-span-5 md:col-span-4 flex items-center gap-3">
                               <div className="relative w-5 h-5 flex items-center justify-center">
@@ -496,7 +498,7 @@ export default function App() {
                                </div>
                                <span className="font-bold opacity-70 min-w-[40px] text-right text-sm">{progress.toFixed(1)}%</span>
                             </div>
-                          </div>
+                          </button>
                         );
                       })}
                     </div>
@@ -510,13 +512,16 @@ export default function App() {
                 const progress = (rank.cumulativeKudos / TOTAL_KUDOS) * 100;
 
                 return (
-                  <div 
+                  <button 
                     key={rank.id}
                     id={`rank-row-${rank.id}`}
                     onClick={() => setCurrentRankId(rank.id)}
                     className={`
-                      grid grid-cols-[repeat(13,minmax(0,1fr))] gap-4 transition-all cursor-pointer group items-center
-                      ${isCurrent ? 'bg-hades-border border-l-4 border-hades-accent text-white shadow-[inset_4px_0_15_rgba(16,185,129,0.1)] py-4 px-10 text-sm' : 'bg-transparent py-2 px-10 text-sm text-hades-text/80 border-l border-transparent hover:bg-hades-border/40'}
+                      grid grid-cols-[repeat(13,minmax(0,1fr))] gap-4 transition-all cursor-pointer group items-center w-full text-left outline-none
+                      ${isCurrent 
+                        ? 'bg-hades-border border-l-4 border-hades-accent text-white shadow-[inset_4px_0_15_rgba(16,185,129,0.1)] py-4 px-10 text-sm focus-visible:bg-hades-border/80' 
+                        : 'bg-transparent py-2 px-10 text-sm text-hades-text/80 border-l border-transparent hover:bg-hades-border/40 focus-visible:bg-hades-accent/5'}
+                      focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-hades-accent/40
                     `}
                   >
                     <div className="col-span-5 md:col-span-4 flex items-center gap-3">
@@ -560,7 +565,7 @@ export default function App() {
                        </div>
                        <span className="font-bold opacity-70 min-w-[40px] text-right text-sm">{progress.toFixed(1)}%</span>
                     </div>
-                  </div>
+                  </button>
                 );
               })}
 
