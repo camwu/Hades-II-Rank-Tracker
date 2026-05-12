@@ -421,7 +421,7 @@ export default function App() {
                       </span>
                     </div>
                     <motion.div
-                      animate={{ rotate: isHistoryExpanded ? 180 : 0 }}
+                      animate={{ rotate: isHistoryExpanded ? 90 : 0 }}
                       className="opacity-40 group-hover:opacity-100 transition-opacity"
                     >
                       <ChevronRight className="w-4 h-4" />
