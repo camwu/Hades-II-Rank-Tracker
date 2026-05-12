@@ -299,13 +299,15 @@ export default function App() {
     window.history.replaceState({}, '', url);
   }, [currentRankId]);
 
-  const filteredRanks = useMemo(() => 
-    RANKS.filter((r) => 
-      r.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      r.colorName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      r.bossResourceName.toLowerCase().includes(searchQuery.toLowerCase())
-    ), 
-  [searchQuery]);
+  const filteredRanks = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return RANKS;
+    return RANKS.filter((r) => 
+      r.name.toLowerCase().includes(query) ||
+      r.colorName.toLowerCase().includes(query) ||
+      r.bossResourceName.toLowerCase().includes(query)
+    );
+  }, [searchQuery]);
 
   const completedRanks = useMemo(() => 
     filteredRanks.filter(r => r.id < currentRankId),
