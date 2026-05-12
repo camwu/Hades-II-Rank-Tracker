@@ -184,6 +184,7 @@ export default function App() {
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
   const [lastUpdated, setLastUpdated] = useState<string>('');
   const historyContainerRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -383,6 +384,7 @@ export default function App() {
             <div className="relative group w-full lg:w-64 max-w-sm">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-hades-accent/50" />
               <input 
+                ref={searchInputRef}
                 id="search-input"
                 type="text" 
                 placeholder="Search..." 
@@ -398,7 +400,7 @@ export default function App() {
                     exit={{ opacity: 0, scale: 0.8 }}
                     onClick={() => {
                       setSearchQuery('');
-                      document.getElementById('search-input')?.focus();
+                      searchInputRef.current?.focus();
                     }}
                     className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-hades-border-light rounded-full transition-colors text-hades-text/50 hover:text-white outline-none focus-visible:ring-2 focus-visible:ring-hades-accent focus-visible:bg-hades-border-light"
                   >
