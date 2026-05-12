@@ -20,7 +20,9 @@ import {
   ChevronLeft,
   ChevronRight,
   History,
-  RotateCcw
+  RotateCcw,
+  BarChart2,
+  Menu
 } from 'lucide-react';
 import { RANKS, TOTAL_KUDOS, TOTAL_RESOURCES, Rank, RESOURCE_ORDER } from './constants';
 import { 
@@ -46,12 +48,22 @@ export default function App() {
   });
   const [searchQuery, setSearchQuery] = useState('');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobileStatsOpen, setIsMobileStatsOpen] = useState(false);
   const [isHistoryExpanded, setIsHistoryExpanded] = useState(false);
   const [isSpentExpanded, setIsSpentExpanded] = useState(true);
   const [isRemainingExpanded, setIsRemainingExpanded] = useState(true);
   const [isResetConfirming, setIsResetConfirming] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
   const [lastUpdated, setLastUpdated] = useState<string>('');
   const historyContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isMobile = windowWidth < 1024;
 
   const handleResetProgress = () => {
     if (!isResetConfirming) {
@@ -101,10 +113,13 @@ export default function App() {
   [currentRankId]);
 
   const remainingResources = useMemo(() => {
+    const order = ['Feather', 'Golden Apple', 'Pearl', 'Wool', 'Moon Dust', 'Cinder', 'Tears', 'Nightmare', 'Void Lens', 'Zodiac Sand'];
     return TOTAL_RESOURCES.map(total => {
       const spent = currentRank.cumulativeResources.find(s => s.name === total.name)?.amount || 0;
       return { name: total.name, amount: total.amount - spent };
-    }).filter(r => r.amount > 0);
+    })
+    .filter(r => r.amount > 0)
+    .sort((a, b) => order.indexOf(a.name) - order.indexOf(b.name));
   }, [currentRank]);
 
   const progressPercentage = useMemo(() => 
@@ -180,29 +195,54 @@ export default function App() {
   return (
     <div id="app-root" className="h-screen bg-hades-bg text-hades-text font-sans overflow-hidden flex flex-col">
       {/* Header */}
-      <header className="h-24 bg-hades-bg-dark border-b border-hades-border shrink-0 z-10 px-4">
-        <div className="max-w-[1440px] mx-auto w-full h-full flex items-center justify-between px-6 md:px-8">
-          <div className="flex items-center gap-6">
-            <img src="/favicon.png" alt="" className="w-10 h-10 object-contain drop-shadow-[0_0_15px_rgba(16,185,129,0.4)]" />
-            <h1 className="text-2xl md:text-3xl font-sans font-black tracking-wider text-hades-accent uppercase truncate">Hades II Rank Tracker</h1>
+      <header className="min-h-24 bg-hades-bg-dark border-b border-hades-border shrink-0 z-10 px-4 py-4 lg:py-0">
+        <div className="max-w-[1440px] mx-auto w-full h-full flex flex-col lg:flex-row items-center justify-between px-2 lg:px-8 gap-4 lg:gap-0">
+          <div className="flex items-center gap-3 lg:gap-6 w-full lg:w-auto justify-center lg:justify-start">
+            <img 
+              src="/favicon.png" 
+              alt="" 
+              className="w-8 h-8 md:w-10 md:h-10 object-contain drop-shadow-[0_0_15px_rgba(16,185,129,0.4)]" 
+            />
+            <h1 className="text-xl lg:text-3xl font-sans font-black tracking-wider text-hades-accent uppercase truncate">
+              Hades II Rank Tracker
+            </h1>
           </div>
 
-          <div className="flex items-center gap-4 md:gap-6">
-            <button 
-              onClick={handleResetProgress}
-              className={`flex items-center gap-2 px-3 py-2 border rounded-lg transition-all text-sm font-bold uppercase tracking-wider group outline-none focus-visible:ring-2 focus-visible:ring-hades-red focus-visible:ring-offset-2 focus-visible:ring-offset-hades-bg focus-visible:bg-hades-red/20 ${
-                isResetConfirming 
-                  ? 'bg-hades-red border-hades-red text-white' 
-                  : 'bg-hades-panel border-hades-border-light text-hades-text/50 hover:text-hades-red hover:border-hades-red/50'
-              }`}
-              title={isResetConfirming ? "Click again to confirm reset" : "Reset All Progress"}
-            >
-              <RotateCcw className={`w-3.5 h-3.5 transition-transform ${isResetConfirming ? 'animate-spin' : 'group-hover:rotate-[-45deg]'}`} />
-              <span className="hidden sm:inline">
-                {isResetConfirming ? "Confirm Reset?" : "Reset Progress"}
-              </span>
-            </button>
-            <div className="relative group w-40 md:w-64">
+          <div className="flex items-center gap-3 lg:gap-6 w-full lg:w-auto justify-center lg:justify-end">
+            <div className="flex items-center gap-2 lg:gap-4 shrink-0">
+              <button 
+                onClick={() => setIsMobileStatsOpen(true)}
+                className="lg:hidden h-10 w-10 flex items-center justify-center bg-hades-panel border border-hades-border-light rounded-lg text-hades-accent hover:bg-hades-border-light transition-colors outline-none focus-visible:ring-2 focus-visible:ring-hades-accent"
+                title="View stats"
+              >
+                <BarChart2 className="w-5 h-5" />
+              </button>
+              <button 
+                onClick={handleResetProgress}
+                className={`flex items-center gap-2 px-3 h-10 border rounded-lg transition-all text-xs md:text-sm font-bold uppercase tracking-wider group outline-none focus-visible:ring-2 focus-visible:ring-hades-red focus-visible:ring-offset-2 focus-visible:ring-offset-hades-bg focus-visible:bg-hades-red/20 ${
+                  isResetConfirming 
+                    ? 'bg-hades-red border-hades-red text-white' 
+                    : 'bg-hades-panel border-hades-border-light text-hades-text/50 hover:text-hades-red hover:border-hades-red/50'
+                }`}
+                title={isResetConfirming ? "Click again to confirm reset" : "Reset All Progress"}
+              >
+                <RotateCcw className={`w-3.5 h-3.5 transition-transform ${isResetConfirming ? 'animate-spin' : 'group-hover:rotate-[-45deg]'}`} />
+                <span className="whitespace-nowrap">
+                  {isResetConfirming ? (
+                    <>
+                      <span className="hidden sm:inline">Confirm Reset</span>
+                      <span className="sm:hidden">Confirm</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="hidden sm:inline">Reset Progress</span>
+                      <span className="sm:hidden">Reset</span>
+                    </>
+                  )}
+                </span>
+              </button>
+            </div>
+            <div className="relative group w-full lg:w-64 max-w-sm">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-hades-accent/50" />
               <input 
                 id="search-input"
@@ -210,7 +250,7 @@ export default function App() {
                 placeholder="Search..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-hades-panel border border-hades-border-light rounded-lg pl-10 pr-10 py-2.5 outline-none focus:border-hades-accent transition-all w-full text-sm text-white"
+                className="bg-hades-panel border border-hades-border-light rounded-lg pl-10 pr-10 h-10 outline-none focus:border-hades-accent transition-all w-full text-sm text-white"
               />
               <AnimatePresence>
                 {searchQuery && (
@@ -235,16 +275,48 @@ export default function App() {
 
       <div className="flex flex-1 overflow-hidden justify-center bg-hades-bg">
         <div className="flex-1 flex w-full max-w-[1440px] overflow-hidden relative border-x border-hades-border shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+          {/* Mobile Overlay / Backdrop */}
+          <AnimatePresence>
+            {isMobileStatsOpen && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsMobileStatsOpen(false)}
+                className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 lg:hidden"
+              />
+            )}
+          </AnimatePresence>
+
           {/* Sidebar */}
           <motion.aside 
             initial={false}
-            animate={{ width: isSidebarCollapsed ? 64 : 350 }}
-            className="bg-hades-bg-dark border-r border-hades-border flex flex-col hidden lg:flex shrink-0 relative z-20"
+            animate={{ 
+              width: isMobile ? 320 : (isSidebarCollapsed ? 64 : 350),
+              x: isMobile ? (isMobileStatsOpen ? 0 : -320) : 0
+            }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className={`
+              bg-hades-bg-dark border-r border-hades-border flex flex-col shrink-0
+              ${isMobile ? 'fixed inset-y-0 left-0 z-50 shadow-2xl' : 'relative z-20'}
+              ${!isMobile || isMobileStatsOpen ? 'flex' : 'hidden lg:flex'}
+            `}
           >
-            {/* Toggle Button Integrated into Divider */}
+            {/* Mobile Header / Close */}
+            <div className="lg:hidden flex items-center justify-between p-6 border-b border-hades-border-light shrink-0">
+              <h2 className="text-sm font-black uppercase tracking-[0.2em] text-hades-accent">Statistics</h2>
+              <button 
+                onClick={() => setIsMobileStatsOpen(false)}
+                className="p-1 hover:bg-hades-border-light rounded-full transition-colors text-hades-text/50"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Toggle Button Integrated into Divider (Desktop Only) */}
             <button 
               onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-              className="absolute -right-3 top-[21px] z-30 flex items-center justify-center w-6 h-6 bg-hades-bg-dark border border-hades-border rounded-md shadow-lg hover:border-hades-accent/50 transition-all text-hades-accent/60 hover:text-hades-accent outline-none focus-visible:ring-2 focus-visible:ring-hades-accent focus-visible:border-hades-accent"
+              className="absolute -right-3 top-[21px] z-30 hidden lg:flex items-center justify-center w-6 h-6 bg-hades-bg-dark border border-hades-border rounded-md shadow-lg hover:border-hades-accent/50 transition-all text-hades-accent/60 hover:text-hades-accent outline-none focus-visible:ring-2 focus-visible:ring-hades-accent focus-visible:border-hades-accent"
               title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
             >
               {isSidebarCollapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
@@ -263,7 +335,7 @@ export default function App() {
                         <motion.div 
                           initial={{ width: 0 }}
                           animate={{ width: `${progressPercentage}%` }}
-                          className="h-full bg-hades-accent rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]"
+                          className="h-full bg-hades-accent rounded-full shadow-[0_0_15px_rgba(16,185,129,0.3)]"
                         />
                       </div>
 
@@ -319,7 +391,7 @@ export default function App() {
                                       </div>
                                       <div className="min-w-0 pt-0.5">
                                         <p className="text-sm text-white leading-none font-bold">{amount.toLocaleString()}</p>
-                                        <p className="text-[10px] uppercase opacity-50 font-sans mt-1.5 leading-tight tracking-normal">{resName === 'Golden Apple' ? 'Gold Apple' : resName}</p>
+                                        <p className="text-[9px] uppercase opacity-50 font-sans mt-1 leading-tight tracking-tight">{resName === 'Golden Apple' ? 'Gold Apple' : resName}</p>
                                       </div>
                                     </div>
                                   );
@@ -369,8 +441,9 @@ export default function App() {
                               className="overflow-hidden"
                             >
                               <div className="grid grid-cols-2 gap-y-4 gap-x-4 pt-4 border-t border-hades-border-light/50 w-full">
-                                {remainingResources.map((resource) => {
-                                  const resName = resource.name;
+                                {['Feather', 'Golden Apple', 'Pearl', 'Wool', 'Moon Dust', 'Cinder', 'Tears', 'Nightmare', 'Void Lens', 'Zodiac Sand'].map((resName) => {
+                                  const resource = remainingResources.find(r => r.name === resName);
+                                  if (!resource) return null;
                                   const amount = resource.amount;
                                   
                                   return (
@@ -380,7 +453,7 @@ export default function App() {
                                       </div>
                                       <div className="min-w-0 pt-0.5">
                                         <p className="text-sm text-white leading-none font-bold">{amount.toLocaleString()}</p>
-                                        <p className="text-[10px] uppercase opacity-50 font-sans mt-1.5 leading-tight tracking-normal">{resName === 'Golden Apple' ? 'Gold Apple' : resName}</p>
+                                        <p className="text-[9px] uppercase opacity-50 font-sans mt-1 leading-tight tracking-tight">{resName === 'Golden Apple' ? 'Gold Apple' : resName}</p>
                                       </div>
                                     </div>
                                   );
@@ -399,17 +472,19 @@ export default function App() {
 
           {/* Main Content */}
           <main className="flex-1 flex flex-col bg-hades-bg-main overflow-hidden relative">
-            <div className="flex-1 flex flex-col w-full px-6 md:px-8 pb-6 md:pb-8 pt-4 overflow-hidden">
-              <div className="grid grid-cols-[repeat(13,minmax(0,1fr))] gap-4 mb-4 text-xs uppercase tracking-widest opacity-50 px-10 font-black py-2 bg-hades-bg-main sticky top-0 z-10">
-                <span className="col-span-5 md:col-span-4">Rank</span>
-              <div className="hidden md:block md:col-span-3 text-right">
-                <span>Kudos Cost</span>
+            <div className="flex-1 flex flex-col w-full px-4 md:px-8 pb-6 md:pb-8 pt-4 overflow-hidden">
+              <div className="grid grid-cols-[repeat(13,minmax(0,1fr))] gap-2 md:gap-4 mb-4 text-xs md:text-xs uppercase tracking-widest opacity-50 pl-1 pr-3 md:pl-9 md:pr-10 font-black py-2 bg-hades-bg-main sticky top-0 z-10 transition-all">
+                <span className="col-span-6 md:col-span-4">Rank</span>
+                <div className="col-span-3 md:col-span-3 text-right pr-3">
+                  <span className="hidden sm:inline">Kudos Cost</span>
+                  <span className="sm:hidden">Kudos</span>
+                </div>
+                <div className="col-span-4 md:col-span-3 text-right">
+                  <span className="hidden sm:inline">Resource</span>
+                  <span className="sm:hidden">Resource</span>
+                </div>
+                <span className="hidden md:block md:col-span-3 text-right">Progress</span>
               </div>
-              <div className="col-span-5 md:col-span-3 text-right">
-                <span>Resource</span>
-              </div>
-              <span className="col-span-3 md:col-span-3 text-right">Progress</span>
-            </div>
 
             <div className="flex-1 overflow-y-auto border border-hades-border-light rounded-xl bg-hades-bg-light shadow-2xl">
             <div className="grid grid-cols-1 divide-y divide-hades-border-light">
@@ -418,11 +493,13 @@ export default function App() {
                 <div className="sticky top-0 bg-hades-bg-light border-b border-hades-border-light z-20">
                   <button 
                     onClick={() => setIsHistoryExpanded(!isHistoryExpanded)}
-                    className="w-full flex items-center justify-between p-4 px-10 hover:bg-hades-border/40 transition-colors group outline-none focus-visible:bg-hades-border/60 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-hades-accent/40"
+                    className="w-full flex items-center justify-between py-1.5 md:py-2 pl-1 pr-3 md:pl-9 md:pr-10 hover:bg-hades-border/40 transition-colors group outline-none focus-visible:bg-hades-border/60 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-hades-accent/40"
                   >
-                    <div className="flex items-center gap-3">
-                      <History className="w-4 h-4 text-hades-text opacity-30" />
-                      <span className="text-[11px] uppercase tracking-[0.2em] text-hades-text opacity-40 font-black">
+                    <div className="flex items-center gap-2 md:gap-4">
+                      <div className="w-8 h-8 md:w-11 md:h-11 flex-shrink-0 flex items-center justify-center">
+                        <History className="w-3.5 h-3.5 md:w-4 md:h-4 text-hades-text opacity-30" />
+                      </div>
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-hades-text opacity-40 font-black">
                         {completedRanks.length} Completed Ranks
                       </span>
                     </div>
@@ -452,51 +529,53 @@ export default function App() {
                           <button 
                             key={rank.id}
                             id={`rank-row-${rank.id}`}
-                            onClick={() => setCurrentRankId(rank.id)}
+                            onClick={() => {
+                              setCurrentRankId(rank.id);
+                              if (isMobile) setIsMobileStatsOpen(false);
+                            }}
                             tabIndex={isHistoryExpanded ? 0 : -1}
                             aria-hidden={!isHistoryExpanded}
-                            className="grid grid-cols-[repeat(13,minmax(0,1fr))] gap-4 py-2.5 px-10 text-sm opacity-30 italic hover:opacity-100 hover:bg-hades-border/20 focus-visible:opacity-100 focus-visible:not-italic focus-visible:bg-hades-accent/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-hades-accent/40 cursor-pointer transition-all items-center w-full text-left outline-none"
+                            className="grid grid-cols-[repeat(13,minmax(0,1fr))] gap-2 md:gap-4 py-0.5 pl-1 pr-3 md:pl-9 md:pr-10 text-[11px] md:text-sm opacity-30 italic hover:opacity-100 hover:bg-hades-border/20 focus-visible:opacity-100 focus-visible:not-italic focus-visible:bg-hades-accent/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-hades-accent/40 cursor-pointer transition-all items-center w-full text-left outline-none border-l-4 border-transparent"
                           >
-                            <div className="col-span-5 md:col-span-4 flex items-center gap-3">
-                              <div className="relative w-5 h-5 flex items-center justify-center">
+                            <div className="col-span-6 md:col-span-4 flex items-center gap-2 md:gap-4">
+                              <div className="relative w-8 h-8 md:w-11 md:h-11 flex flex-shrink-0 items-center justify-center">
                                 <img 
                                   src={rank.imageUrl} 
                                   alt="" 
                                   className="w-full h-full object-contain z-10"
+                                  style={{ filter: rank.id > 0 ? `drop-shadow(0 0 10px ${rank.colorHex}33)` : 'none' }}
                                   onError={(e) => (e.currentTarget.style.display = 'none')}
                                 />
-                                <div 
-                                  className="absolute inset-0 w-1.5 h-1.5 m-auto rounded-full ring-2 ring-transparent opacity-50" 
-                                  style={{ backgroundColor: rank.colorHex }}
-                                />
                               </div>
-                              <span className="text-base whitespace-nowrap">{rank.name}</span>
+                              <span className="text-xs md:text-base font-medium">{rank.name}</span>
                             </div>
-                            <div className="hidden md:flex md:col-span-3 items-center justify-end gap-2 opacity-80">
+                            <div className="col-span-3 md:col-span-3 flex items-center justify-end gap-1 md:gap-2 opacity-80 pr-3">
                               {rank.id > 0 ? (
                                 <>
-                                  <span className="text-sm leading-none">{rank.kudos.toLocaleString()}</span>
-                                  <img src="/assets/resources/Kudos.png" alt="" className="w-4 h-4 object-contain" />
+                                  <span className="text-[10px] md:text-sm leading-none">{rank.kudos.toLocaleString()}</span>
+                                  <img src="/assets/resources/Kudos.png" alt="" className="w-3.5 h-3.5 md:w-4 md:h-4 object-contain" />
                                 </>
                               ) : (
                                 <span className="text-sm opacity-30">—</span>
                               )}
                             </div>
-                            <div className="col-span-5 md:col-span-3 flex items-center justify-end gap-3 opacity-90 min-w-0">
+                            <div className="col-span-4 md:col-span-3 flex items-center justify-end gap-1 md:gap-3 opacity-90 min-w-0">
                                {rank.id > 0 ? (
                                  <>
-                                   <span className="text-sm leading-tight text-right">{rank.bossResourceQty}x {rank.bossResourceName}</span>
-                                   <img src={rank.bossResourceImageUrl} alt="" className="w-5 h-5 object-contain flex-shrink-0" />
+                                   <span className="text-[10px] md:text-sm leading-tight text-right truncate">
+                                     {rank.bossResourceQty}x <span className="hidden lg:inline">{rank.bossResourceName}</span>
+                                   </span>
+                                   <img src={rank.bossResourceImageUrl} alt="" className="w-4 h-4 md:w-5 md:h-5 object-contain flex-shrink-0" />
                                  </>
                                ) : (
                                  <span className="text-sm opacity-30">—</span>
                                )}
                              </div>
-                            <div className="col-span-3 md:col-span-3 flex items-center gap-3 justify-end">
-                               <div className="w-20 h-1 bg-hades-border rounded-full overflow-hidden opacity-30">
+                            <div className="hidden md:flex md:col-span-3 items-center gap-3 justify-end">
+                               <div className="hidden sm:block w-20 h-1 bg-hades-border rounded-full overflow-hidden opacity-30">
                                  <div className="h-full" style={{ width: `${progress}%`, backgroundColor: '#10b981' }} />
                                </div>
-                               <span className="font-bold opacity-70 min-w-[40px] text-right text-sm">{progress.toFixed(1)}%</span>
+                               <span className="font-bold opacity-70 min-w-[35px] md:min-w-[40px] text-right text-xs md:text-sm">{progress.toFixed(1)}%</span>
                             </div>
                           </button>
                         );
@@ -515,55 +594,57 @@ export default function App() {
                   <button 
                     key={rank.id}
                     id={`rank-row-${rank.id}`}
-                    onClick={() => setCurrentRankId(rank.id)}
+                    onClick={() => {
+                      setCurrentRankId(rank.id);
+                      if (isMobile) setIsMobileStatsOpen(false);
+                    }}
                     className={`
-                      grid grid-cols-[repeat(13,minmax(0,1fr))] gap-4 transition-all cursor-pointer group items-center w-full text-left outline-none
+                      grid grid-cols-[repeat(13,minmax(0,1fr))] gap-2 md:gap-4 transition-all cursor-pointer group items-center w-full text-left outline-none
                       ${isCurrent 
-                        ? 'bg-hades-border border-l-4 border-hades-accent text-white shadow-[inset_4px_0_15_rgba(16,185,129,0.1)] py-4 px-10 text-sm focus-visible:bg-hades-border/80' 
-                        : 'bg-transparent py-2 px-10 text-sm text-hades-text/80 border-l border-transparent hover:bg-hades-border/40 focus-visible:bg-hades-accent/5'}
+                        ? 'bg-hades-border border-l-4 border-hades-accent text-white shadow-[inset_4px_0_15_rgba(16,185,129,0.1)] py-2.5 pl-1 pr-3 md:pl-9 md:pr-10 text-xs md:text-sm focus-visible:bg-hades-border/80' 
+                        : 'bg-transparent py-1.5 md:py-2 pl-1 pr-3 md:pl-9 md:pr-10 text-xs md:text-sm text-hades-text/80 border-l-4 border-transparent hover:bg-hades-border/40 focus-visible:bg-hades-accent/5'}
                       focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-hades-accent/40
                     `}
                   >
-                    <div className="col-span-5 md:col-span-4 flex items-center gap-3">
-                      <div className="relative w-11 h-11 flex items-center justify-center">
+                    <div className="col-span-6 md:col-span-4 flex items-center gap-2 md:gap-4">
+                      <div className="relative w-8 h-8 md:w-11 md:h-11 flex-shrink-0 flex items-center justify-center p-1">
                         <img 
                           src={rank.imageUrl} 
                           alt="" 
-                          className="w-full h-full object-contain z-10"
+                          className="w-full h-full object-contain relative z-10 transition-transform group-hover:scale-110"
+                          style={{ filter: rank.id > 0 ? `drop-shadow(0 0 10px ${rank.colorHex}33)` : 'none' }}
                           onError={(e) => (e.currentTarget.style.display = 'none')}
                         />
-                        <div 
-                          className="absolute inset-0 w-1.5 h-1.5 m-auto rounded-full ring-4 ring-transparent group-hover:ring-current/10" 
-                          style={{ backgroundColor: rank.colorHex }}
-                        />
                       </div>
-                      <span className={`text-base ${isCurrent ? 'font-bold text-hades-accent' : ''} whitespace-nowrap`}>{rank.name}</span>
+                      <span className={`text-xs md:text-base ${isCurrent ? 'font-bold text-hades-accent' : 'font-medium'}`}>{rank.name}</span>
                     </div>
-                    <div className="hidden md:flex md:col-span-3 items-center justify-end gap-2 opacity-90">
+                    <div className="col-span-3 md:col-span-3 flex items-center justify-end gap-1 md:gap-2 opacity-90 pr-3">
                       {rank.id > 0 ? (
                         <>
-                          <span className="text-sm leading-none">{rank.kudos.toLocaleString()}</span>
-                          <img src="/assets/resources/Kudos.png" alt="" className="w-4 h-4 object-contain" />
+                          <span className="font-bold text-[11px] md:text-sm">{rank.kudos.toLocaleString()}</span>
+                          <img src="/assets/resources/Kudos.png" alt="" className="w-3.5 h-3.5 md:w-4 md:h-4 object-contain" />
                         </>
                       ) : (
-                        <span className="text-sm opacity-30">—</span>
+                        <span className="text-[10px] uppercase opacity-40 font-black tracking-widest">—</span>
                       )}
                     </div>
-                    <div className="col-span-5 md:col-span-3 flex items-center justify-end gap-3 opacity-100 min-w-0">
+                    <div className="col-span-4 md:col-span-3 flex items-center justify-end gap-1 md:gap-3 opacity-90 min-w-0">
                       {rank.id > 0 ? (
                         <>
-                          <span className="text-sm leading-tight group-hover:text-white transition-colors text-right">{rank.bossResourceQty}x {rank.bossResourceName}</span>
-                          <img src={rank.bossResourceImageUrl} alt="" className={`${isCurrent ? 'w-6 h-6' : 'w-5 h-5'} object-contain flex-shrink-0`} />
+                          <span className="text-[11px] md:text-sm leading-tight group-hover:text-white transition-colors text-right truncate">
+                            {rank.bossResourceQty}x <span className="hidden lg:inline">{rank.bossResourceName}</span>
+                          </span>
+                          <img src={rank.bossResourceImageUrl} alt="" className={`${isCurrent ? 'w-5 h-5 md:w-6 md:h-6' : 'w-4 h-4 md:w-5 md:h-5'} object-contain flex-shrink-0`} />
                         </>
                       ) : (
-                        <span className="text-sm opacity-30">—</span>
+                        <span className="text-[10px] uppercase opacity-40 font-black tracking-widest">—</span>
                       )}
                     </div>
-                    <div className="col-span-3 md:col-span-3 flex items-center gap-3 justify-end">
-                       <div className="w-20 h-2 bg-hades-border rounded-full overflow-hidden border border-hades-border-light/50">
+                    <div className="hidden md:flex md:col-span-3 items-center gap-3 justify-end">
+                       <div className="hidden sm:block w-20 h-2 bg-hades-border rounded-full overflow-hidden border border-hades-border-light/50">
                          <div className="h-full opacity-80" style={{ width: `${progress}%`, backgroundColor: '#10b981' }} />
                        </div>
-                       <span className="font-bold opacity-70 min-w-[40px] text-right text-sm">{progress.toFixed(1)}%</span>
+                       <span className="font-bold opacity-70 min-w-[35px] md:min-w-[40px] text-right text-xs md:text-sm">{progress.toFixed(1)}%</span>
                     </div>
                   </button>
                 );
@@ -581,8 +662,8 @@ export default function App() {
     </div>
   </div>
 
-      <footer className="py-4 bg-hades-bg-main border-t border-hades-border-light px-8 flex flex-col md:flex-row items-center justify-between text-[10px] uppercase tracking-widest opacity-60 shrink-0 gap-4">
-        <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-center">
+      <footer className="py-2.5 md:py-4 bg-hades-bg-main border-t border-hades-border-light px-4 md:px-8 flex flex-col md:flex-row items-center justify-between text-[10px] uppercase tracking-widest opacity-60 shrink-0 gap-2.5 md:gap-4">
+        <div className="flex flex-col md:flex-row gap-2.5 md:gap-8 items-center">
           <a 
             href="https://github.com/camwu/hades-2-rank-tracker" 
             target="_blank" 
@@ -590,15 +671,16 @@ export default function App() {
             className="flex items-center gap-2 hover:text-hades-accent transition-colors"
           >
             <Github className="w-3.5 h-3.5" />
-            <span>GitHub Repository</span>
+            <span>GitHub</span>
           </a>
           {lastUpdated && (
-            <span className="opacity-50">Last Updated: {lastUpdated}</span>
+            <span className="opacity-50 hidden sm:inline">Updated: {lastUpdated}</span>
           )}
         </div>
-        <div className="text-center md:text-right opacity-40 px-4 leading-relaxed">
-          <p>Hades II Rank Tracker is an unofficial, fan-developed project that is not affiliated with or endorsed by Supergiant Games.</p>
-          <p>Hades II and all related characters and assets are the sole property of Supergiant Games.</p>
+        <div className="text-center md:text-right opacity-40 px-2 leading-tight md:leading-relaxed">
+          <p className="hidden md:block">Hades II Rank Tracker is an unofficial, fan-developed project that is not affiliated with or endorsed by Supergiant Games.</p>
+          <p className="md:hidden">Unofficial fan-developed project.</p>
+          <p>Hades II characters and assets property of Supergiant Games.</p>
         </div>
       </footer>
     </div>
