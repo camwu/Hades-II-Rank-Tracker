@@ -2,7 +2,7 @@
 
 ![Hades II Rank Tracker Screenshot](public/assets/screenshot.png)
 
-A simple web app designed to help players track their progress towards unlocking all ranks in Hades II.
+A responsive web app built with React and Tailwind CSS to help players track their rank unlock progress in Hades II
 
 ## 🚀 Live App
 You can access the live application here: [Hades II Rank Tracker](https://hades-ii-rank-tracker-54268731549.us-west2.run.app/)
