@@ -1,20 +1,52 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Hades II Rank Tracker
 
-# Run and deploy your AI Studio app
+![Hades II Rank Tracker Screenshot](/assets/screenshot.png)
 
-This contains everything you need to run your app locally.
+A simple web app designed to help players track their progress towards unlocking all ranks in Hades II.
 
-View your app in AI Studio: https://ai.studio/apps/b139da7f-5ee4-4d50-bb3d-3b1e6acc9f3d
+## 🚀 Live App
+You can access the live application here: [Hades II Rank Tracker](https://hades-ii-rank-tracker-54268731549.us-west2.run.app/)
 
-## Run Locally
+## ✨ Features
+- **Progress Tracking:** Monitor your current rank and track progress towards completion of all ranks.
+- **Resource Management:** View exactly how many Kudos and specific resources are required for your next rank and for all remaining ranks.
+- **Persistent Progress:** Your current rank is saved locally so you can resume tracking at any time.
+- **Search & Filter:** Quickly find specific ranks by name or their unique resource requirements.
 
-**Prerequisites:**  Node.js
+## 🛠️ How to Use
+1. **Select Your Rank:** Click on any rank in the list to set it as your current rank.
+2. **View Requirements:** The sidebar will automatically update to show:
+   - **Resources Spent:** What you have already spent to reach your current rank.
+   - **Resources Remaining:** Remaining requirements for full completion.
+3. **Reset Progress:** Use the "Reset Progress" button in the header to start over from "Unranked".
 
+## 📦 Tech Stack
+- React 18+
+- TypeScript
+- Tailwind CSS
+- Framer Motion (for animations)
+- Lucide React (for iconography)
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## 🛠️ Local Development
+
+To run this project locally:
+
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+2. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+
+3. **Build for production:**
+   ```bash
+   npm run build
+   ```
+
+---
+
+### Disclaimer
+Hades II Rank Tracker is an unofficial, fan-developed project that is not affiliated with or endorsed by Supergiant Games. Hades II and all related characters and assets are the sole property of Supergiant Games.
