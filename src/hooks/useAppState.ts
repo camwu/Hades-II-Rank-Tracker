@@ -137,7 +137,7 @@ export function useAppState() {
     RANKS.filter(r => r.id < currentRankId).length,
   [currentRankId]);
 
-  const { setIsMobileStatsOpen, setIsSpentExpanded, setIsRemainingExpanded } = sidebar;
+  const { isMobileStatsOpen, setIsMobileStatsOpen, setIsSpentExpanded, setIsRemainingExpanded } = sidebar;
 
   // --- Handlers ---
   const handleRankClick = useCallback((id: number) => {
@@ -180,10 +180,10 @@ export function useAppState() {
 
   // Handle mobile drawer closure on resize
   useEffect(() => {
-    if (!isMobile && sidebar.isMobileStatsOpen) {
-      sidebar.setIsMobileStatsOpen(false);
+    if (!isMobile && isMobileStatsOpen) {
+      setIsMobileStatsOpen(false);
     }
-  }, [isMobile, sidebar]);
+  }, [isMobile, isMobileStatsOpen, setIsMobileStatsOpen]);
 
   // Auto-expand history on search
   useEffect(() => {
