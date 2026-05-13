@@ -180,15 +180,30 @@ export function useAppState() {
   }, [isResetConfirming]);
 
   // --- Effects ---
-
-  // Sync to Storage and URL
+  
+  // Storage Persistence
   useEffect(() => {
     localStorage.setItem('hades-rank-id', currentRankId.toString());
+  }, [currentRankId]);
+
+  useEffect(() => {
     localStorage.setItem('hades-sidebar-collapsed', isSidebarCollapsed.toString());
+  }, [isSidebarCollapsed]);
+
+  useEffect(() => {
     localStorage.setItem('hades-history-expanded', isHistoryExpanded.toString());
+  }, [isHistoryExpanded]);
+
+  useEffect(() => {
     localStorage.setItem('hades-spent-expanded', isSpentExpanded.toString());
+  }, [isSpentExpanded]);
+
+  useEffect(() => {
     localStorage.setItem('hades-remaining-expanded', isRemainingExpanded.toString());
-    
+  }, [isRemainingExpanded]);
+
+  // URL Sync
+  useEffect(() => {
     const url = new URL(window.location.href);
     if (currentRankId === 0) url.searchParams.delete('rank');
     else url.searchParams.set('rank', currentRankId.toString());
@@ -197,7 +212,7 @@ export function useAppState() {
     else url.searchParams.set('q', searchQuery.trim());
     
     window.history.replaceState({}, '', url);
-  }, [currentRankId, searchQuery, isSidebarCollapsed, isHistoryExpanded, isSpentExpanded, isRemainingExpanded]);
+  }, [currentRankId, searchQuery]);
 
   // Handle mobile drawer closure on resize
   useEffect(() => {
