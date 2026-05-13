@@ -3,257 +3,52 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   ChevronRight,
   History
 } from 'lucide-react';
-import { RANKS, TOTAL_KUDOS, TOTAL_RESOURCES, Rank, RESOURCE_NAMES } from './constants';
+import { TOTAL_KUDOS } from './constants';
 import { RankRow } from './components/RankRow';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
+import { useAppState } from './hooks/useAppState';
 
 export default function App() {
-  const [currentRankId, setCurrentRankId] = useState<number>(() => {
-    // 1. Check URL first
-    if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search);
-      const rankParam = urlParams.get('rank');
-      if (rankParam) {
-        const parsed = parseInt(rankParam);
-        if (parsed >= 0 && parsed < RANKS.length) return parsed;
-      }
-    }
-
-    // 2. Fallback to localStorage
-    const saved = localStorage.getItem('hades-rank-id');
-    if (saved) {
-      const parsed = parseInt(saved);
-      if (parsed >= 0 && parsed < RANKS.length) return parsed;
-    }
-    return 0;
-  });
-  const [searchQuery, setSearchQuery] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get('q') || '';
-    }
-    return '';
-  });
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('hades-sidebar-collapsed') === 'true';
-    }
-    return false;
-  });
-  const [isMobileStatsOpen, setIsMobileStatsOpen] = useState(false);
-  const [isHistoryExpanded, setIsHistoryExpanded] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('hades-history-expanded') === 'true';
-    }
-    return false;
-  });
-  const [isSpentExpanded, setIsSpentExpanded] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('hades-spent-expanded');
-      return saved === null ? true : saved === 'true';
-    }
-    return true;
-  });
-  const [isRemainingExpanded, setIsRemainingExpanded] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('hades-remaining-expanded');
-      return saved === null ? true : saved === 'true';
-    }
-    return true;
-  });
-  const [isResetConfirming, setIsResetConfirming] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
-  const [lastUpdated] = useState<string>(() => {
-    // Use the build-time constant provided by Vite
-    return (import.meta.env.VITE_LAST_UPDATED as string) || '';
-  });
-  const historyContainerRef = useRef<HTMLDivElement>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    let timeoutId: ReturnType<typeof setTimeout>;
-    const handleResize = () => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        setWindowWidth(window.innerWidth);
-      }, 150);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      clearTimeout(timeoutId);
-    };
-  }, []);
-
-  const isMobile = windowWidth < 1024;
-  
-  useEffect(() => {
-    if (!isMobile && isMobileStatsOpen) {
-      setIsMobileStatsOpen(false);
-    }
-  }, [isMobile, isMobileStatsOpen]);
-  
-  const handleRankClick = useCallback((id: number) => {
-    setCurrentRankId(id);
-    if (isMobile) setIsMobileStatsOpen(false);
-  }, [isMobile]);
-
-  const handleResetProgress = () => {
-    if (!isResetConfirming) {
-      setIsResetConfirming(true);
-      // Auto-cancel after 3 seconds if not clicked again
-      setTimeout(() => setIsResetConfirming(false), 3000);
-      return;
-    }
-    
-    setCurrentRankId(0);
-    setIsHistoryExpanded(false);
-    setIsSpentExpanded(true);
-    setIsRemainingExpanded(true);
-    setIsResetConfirming(false);
-  };
-  
-  useEffect(() => {
-    if (isHistoryExpanded && historyContainerRef.current) {
-      // Use a brief timeout to ensure the container has height before scrolling
-      const timeoutId = setTimeout(() => {
-        if (historyContainerRef.current) {
-          historyContainerRef.current.scrollTop = historyContainerRef.current.scrollHeight;
-        }
-      }, 50);
-      return () => clearTimeout(timeoutId);
-    }
-  }, [isHistoryExpanded, currentRankId]);
-
-  const currentRank = useMemo(() => 
-    RANKS.find((r) => r.id === currentRankId) || RANKS[0], 
-  [currentRankId]);
-
-  const remainingResources = useMemo(() => {
-    return TOTAL_RESOURCES.map(total => {
-      const spent = currentRank.cumulativeResources.find(s => s.name === total.name)?.amount || 0;
-      return { name: total.name, amount: total.amount - spent };
-    })
-    .filter(r => r.amount > 0)
-    .sort((a, b) => RESOURCE_NAMES.indexOf(a.name) - RESOURCE_NAMES.indexOf(b.name));
-  }, [currentRank]);
-
-  const spentResources = useMemo(() => {
-    return currentRank.cumulativeResources
-      .filter(r => r.amount > 0)
-      .sort((a, b) => RESOURCE_NAMES.indexOf(a.name) - RESOURCE_NAMES.indexOf(b.name));
-  }, [currentRank]);
-
-  const progressPercentage = useMemo(() => 
-    (currentRank.cumulativeKudos / TOTAL_KUDOS) * 100, 
-  [currentRank]);
-
-  const remainingKudos = TOTAL_KUDOS - currentRank.cumulativeKudos;
-  const prevRemainingKudosRef = useRef(remainingKudos);
-  
-  const spentKudos = currentRank.cumulativeKudos;
-  const prevSpentKudosRef = useRef(spentKudos);
-
-  useEffect(() => {
-    if (remainingKudos === 0) {
-      setIsRemainingExpanded(false);
-    } else if (prevRemainingKudosRef.current === 0 && remainingKudos > 0) {
-      // Only auto-expand if we transition from 0 back to having remaining kudos
-      setIsRemainingExpanded(true);
-    }
-    prevRemainingKudosRef.current = remainingKudos;
-  }, [remainingKudos]);
-
-  useEffect(() => {
-    if (spentKudos === 0) {
-      setIsSpentExpanded(false);
-    } else if (prevSpentKudosRef.current === 0 && spentKudos > 0) {
-      // Only auto-expand if we transition from 0 to having spent kudos
-      setIsSpentExpanded(true);
-    }
-    prevSpentKudosRef.current = spentKudos;
-  }, [spentKudos]);
-
-  useEffect(() => {
-    localStorage.setItem('hades-rank-id', currentRankId.toString());
-    localStorage.setItem('hades-sidebar-collapsed', isSidebarCollapsed.toString());
-    localStorage.setItem('hades-history-expanded', isHistoryExpanded.toString());
-    localStorage.setItem('hades-spent-expanded', isSpentExpanded.toString());
-    localStorage.setItem('hades-remaining-expanded', isRemainingExpanded.toString());
-    
-    // Sync to URL
-    const url = new URL(window.location.href);
-    
-    // Rank
-    if (currentRankId === 0) {
-      url.searchParams.delete('rank');
-    } else {
-      url.searchParams.set('rank', currentRankId.toString());
-    }
-
-    // Search Query
-    if (!searchQuery.trim()) {
-      url.searchParams.delete('q');
-    } else {
-      url.searchParams.set('q', searchQuery.trim());
-    }
-    
-    window.history.replaceState({}, '', url);
-  }, [currentRankId, searchQuery, isSidebarCollapsed, isHistoryExpanded, isSpentExpanded, isRemainingExpanded]);
-
-  const filteredRanks = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
-    if (!query) return RANKS;
-    return RANKS.filter((r) => 
-      r.name.toLowerCase().includes(query) ||
-      r.colorName.toLowerCase().includes(query) ||
-      r.bossResourceName.toLowerCase().includes(query)
-    );
-  }, [searchQuery]);
-
-  const completedRanks = useMemo(() => 
-    filteredRanks.filter(r => r.id < currentRankId),
-  [filteredRanks, currentRankId]);
-
-  const totalCompletedCount = useMemo(() => 
-    RANKS.filter(r => r.id < currentRankId).length,
-  [currentRankId]);
-
-  const isInitialMount = useRef(true);
-
-  useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
-    }
-    if (searchQuery && completedRanks.length > 0) {
-      setIsHistoryExpanded(true);
-    }
-  }, [searchQuery, completedRanks.length]);
-
-  const activeRanks = useMemo(() => 
-    filteredRanks.filter(r => r.id >= currentRankId),
-  [filteredRanks, currentRankId]);
-
-  const statsData = [
-    { name: 'Completed', value: currentRank.cumulativeKudos },
-    { name: 'Remaining', value: remainingKudos },
-  ];
-
-  useEffect(() => {
-    const element = document.getElementById(`rank-row-${currentRankId}`);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }, [currentRankId]);
+  const {
+    currentRankId,
+    searchQuery,
+    setSearchQuery,
+    isSidebarCollapsed,
+    setIsSidebarCollapsed,
+    isMobileStatsOpen,
+    setIsMobileStatsOpen,
+    isHistoryExpanded,
+    setIsHistoryExpanded,
+    isSpentExpanded,
+    setIsSpentExpanded,
+    isRemainingExpanded,
+    setIsRemainingExpanded,
+    isResetConfirming,
+    windowWidth,
+    isMobile,
+    currentRank,
+    remainingResources,
+    spentResources,
+    progressPercentage,
+    remainingKudos,
+    spentKudos,
+    filteredRanks,
+    completedRanks,
+    activeRanks,
+    totalCompletedCount,
+    handleRankClick,
+    handleResetProgress,
+    historyContainerRef,
+    searchInputRef,
+    lastUpdated
+  } = useAppState();
 
   return (
     <div id="app-root" className="h-screen bg-hades-bg text-hades-text font-sans overflow-hidden flex flex-col">
@@ -327,6 +122,8 @@ export default function App() {
                 <div className="sticky top-0 bg-hades-bg-light border-b border-hades-border-light z-20">
                   <button 
                     onClick={() => setIsHistoryExpanded(!isHistoryExpanded)}
+                    aria-expanded={isHistoryExpanded}
+                    aria-controls="history-section-content"
                     className="w-full flex items-center justify-between py-1.5 md:py-2 pl-1 pr-3 md:pl-9 md:pr-10 hover:bg-hades-border/40 transition-colors group outline-none focus-visible:bg-hades-border/60 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-hades-accent/40"
                   >
                     <div className="flex items-center gap-2 md:gap-4">
@@ -346,6 +143,7 @@ export default function App() {
                   </button>
                   
                   <motion.div
+                    id="history-section-content"
                     ref={historyContainerRef}
                     initial={false}
                     animate={{ 
