@@ -67,6 +67,12 @@ export default function App() {
 
   const isMobile = windowWidth < 1024;
   
+  useEffect(() => {
+    if (!isMobile && isMobileStatsOpen) {
+      setIsMobileStatsOpen(false);
+    }
+  }, [isMobile, isMobileStatsOpen]);
+  
   const handleRankClick = useCallback((id: number) => {
     setCurrentRankId(id);
     if (isMobile) setIsMobileStatsOpen(false);
