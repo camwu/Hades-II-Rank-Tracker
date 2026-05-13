@@ -35,7 +35,7 @@ export const Header = ({
   const shouldCollapseSearch = isResetConfirming && windowWidth < 640 && !isSearchFocused && !searchQuery;
 
   return (
-    <header className="min-h-24 bg-hades-bg-dark border-b border-hades-border shrink-0 z-10 px-4 py-4 lg:py-0">
+    <header className="h-auto bg-hades-bg-dark border-b border-hades-border shrink-0 z-10 px-4 py-4 md:py-6">
       <div className="max-w-[1440px] mx-auto w-full h-full flex flex-col lg:flex-row items-center justify-between px-2 lg:px-8 gap-4 lg:gap-0">
         <div className="flex items-center gap-3 lg:gap-6 w-full lg:w-auto justify-center lg:justify-start">
           <img 
