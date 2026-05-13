@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { RANKS, TOTAL_KUDOS, TOTAL_RESOURCES, RESOURCE_NAMES } from '../constants';
+import { useLocalStorageState } from './useLocalStorageState';
+import { useSidebarState } from './useSidebarState';
 
 export function useAppState() {
   // --- Persistent State ---
@@ -28,38 +30,20 @@ export function useAppState() {
     return '';
   });
 
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('hades-sidebar-collapsed') === 'true';
-    }
-    return false;
-  });
+  const [isHistoryExpanded, setIsHistoryExpanded] = useLocalStorageState('hades-history-expanded', false);
 
-  const [isHistoryExpanded, setIsHistoryExpanded] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('hades-history-expanded') === 'true';
-    }
-    return false;
-  });
+  // --- Derived Basic Values ---
+  const currentRank = useMemo(() => 
+    RANKS.find((r) => r.id === currentRankId) || RANKS[0], 
+  [currentRankId]);
 
-  const [isSpentExpanded, setIsSpentExpanded] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('hades-spent-expanded');
-      return saved === null ? true : saved === 'true';
-    }
-    return true;
-  });
+  const remainingKudos = TOTAL_KUDOS - currentRank.cumulativeKudos;
+  const spentKudos = currentRank.cumulativeKudos;
 
-  const [isRemainingExpanded, setIsRemainingExpanded] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('hades-remaining-expanded');
-      return saved === null ? true : saved === 'true';
-    }
-    return true;
-  });
+  // --- Hooks ---
+  const sidebar = useSidebarState(spentKudos, remainingKudos);
 
   // --- Volatile State ---
-  const [isMobileStatsOpen, setIsMobileStatsOpen] = useState(false);
   const [isResetConfirming, setIsResetConfirming] = useState(false);
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
   const [lastUpdated] = useState<string>(() => {
@@ -68,8 +52,6 @@ export function useAppState() {
 
   // --- Refs ---
   const isInitialMount = useRef(true);
-  const prevRemainingKudosRef = useRef(0);
-  const prevSpentKudosRef = useRef(0);
   const historyContainerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -111,10 +93,6 @@ export function useAppState() {
   }, [currentRankId]);
 
   // --- Derived Data ---
-  const currentRank = useMemo(() => 
-    RANKS.find((r) => r.id === currentRankId) || RANKS[0], 
-  [currentRankId]);
-
   const remainingResources = useMemo(() => {
     return TOTAL_RESOURCES.map(total => {
       const spent = currentRank.cumulativeResources.find(s => s.name === total.name)?.amount || 0;
@@ -133,9 +111,6 @@ export function useAppState() {
   const progressPercentage = useMemo(() => 
     (currentRank.cumulativeKudos / TOTAL_KUDOS) * 100, 
   [currentRank]);
-
-  const remainingKudos = TOTAL_KUDOS - currentRank.cumulativeKudos;
-  const spentKudos = currentRank.cumulativeKudos;
 
   const filteredRanks = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -162,8 +137,8 @@ export function useAppState() {
   // --- Handlers ---
   const handleRankClick = useCallback((id: number) => {
     setCurrentRankId(id);
-    if (isMobile) setIsMobileStatsOpen(false);
-  }, [isMobile]);
+    if (isMobile) sidebar.setIsMobileStatsOpen(false);
+  }, [isMobile, sidebar]);
 
   const handleResetProgress = useCallback(() => {
     if (!isResetConfirming) {
@@ -174,33 +149,17 @@ export function useAppState() {
     
     setCurrentRankId(0);
     setIsHistoryExpanded(false);
-    setIsSpentExpanded(true);
-    setIsRemainingExpanded(true);
+    sidebar.setIsSpentExpanded(true);
+    sidebar.setIsRemainingExpanded(true);
     setIsResetConfirming(false);
-  }, [isResetConfirming]);
+  }, [isResetConfirming, sidebar, setIsHistoryExpanded]);
 
   // --- Effects ---
   
-  // Storage Persistence
+  // Storage Persistence for currentRankId (others handled by hooks)
   useEffect(() => {
     localStorage.setItem('hades-rank-id', currentRankId.toString());
   }, [currentRankId]);
-
-  useEffect(() => {
-    localStorage.setItem('hades-sidebar-collapsed', isSidebarCollapsed.toString());
-  }, [isSidebarCollapsed]);
-
-  useEffect(() => {
-    localStorage.setItem('hades-history-expanded', isHistoryExpanded.toString());
-  }, [isHistoryExpanded]);
-
-  useEffect(() => {
-    localStorage.setItem('hades-spent-expanded', isSpentExpanded.toString());
-  }, [isSpentExpanded]);
-
-  useEffect(() => {
-    localStorage.setItem('hades-remaining-expanded', isRemainingExpanded.toString());
-  }, [isRemainingExpanded]);
 
   // URL Sync
   useEffect(() => {
@@ -216,29 +175,10 @@ export function useAppState() {
 
   // Handle mobile drawer closure on resize
   useEffect(() => {
-    if (!isMobile && isMobileStatsOpen) {
-      setIsMobileStatsOpen(false);
+    if (!isMobile && sidebar.isMobileStatsOpen) {
+      sidebar.setIsMobileStatsOpen(false);
     }
-  }, [isMobile, isMobileStatsOpen]);
-
-  // Auto-expand/collapse resource sections based on values
-  useEffect(() => {
-    if (remainingKudos === 0) {
-      setIsRemainingExpanded(false);
-    } else if (prevRemainingKudosRef.current === 0 && remainingKudos > 0) {
-      setIsRemainingExpanded(true);
-    }
-    prevRemainingKudosRef.current = remainingKudos;
-  }, [remainingKudos]);
-
-  useEffect(() => {
-    if (spentKudos === 0) {
-      setIsSpentExpanded(false);
-    } else if (prevSpentKudosRef.current === 0 && spentKudos > 0) {
-      setIsSpentExpanded(true);
-    }
-    prevSpentKudosRef.current = spentKudos;
-  }, [spentKudos]);
+  }, [isMobile, sidebar]);
 
   // Auto-expand history on search
   useEffect(() => {
@@ -249,7 +189,7 @@ export function useAppState() {
     if (searchQuery && completedRanks.length > 0) {
       setIsHistoryExpanded(true);
     }
-  }, [searchQuery, completedRanks.length]);
+  }, [searchQuery, completedRanks.length, setIsHistoryExpanded]);
 
   // --- Keyboard Shortcut ---
   useEffect(() => {
@@ -271,16 +211,9 @@ export function useAppState() {
     setCurrentRankId,
     searchQuery,
     setSearchQuery,
-    isSidebarCollapsed,
-    setIsSidebarCollapsed,
-    isMobileStatsOpen,
-    setIsMobileStatsOpen,
+    ...sidebar,
     isHistoryExpanded,
     setIsHistoryExpanded,
-    isSpentExpanded,
-    setIsSpentExpanded,
-    isRemainingExpanded,
-    setIsRemainingExpanded,
     isResetConfirming,
     windowWidth,
     isMobile,
@@ -301,3 +234,4 @@ export function useAppState() {
     lastUpdated
   };
 }
+
