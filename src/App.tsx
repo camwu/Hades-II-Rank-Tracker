@@ -42,11 +42,33 @@ export default function App() {
     }
     return '';
   });
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('hades-sidebar-collapsed') === 'true';
+    }
+    return false;
+  });
   const [isMobileStatsOpen, setIsMobileStatsOpen] = useState(false);
-  const [isHistoryExpanded, setIsHistoryExpanded] = useState(false);
-  const [isSpentExpanded, setIsSpentExpanded] = useState(true);
-  const [isRemainingExpanded, setIsRemainingExpanded] = useState(true);
+  const [isHistoryExpanded, setIsHistoryExpanded] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('hades-history-expanded') === 'true';
+    }
+    return false;
+  });
+  const [isSpentExpanded, setIsSpentExpanded] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('hades-spent-expanded');
+      return saved === null ? true : saved === 'true';
+    }
+    return true;
+  });
+  const [isRemainingExpanded, setIsRemainingExpanded] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('hades-remaining-expanded');
+      return saved === null ? true : saved === 'true';
+    }
+    return true;
+  });
   const [isResetConfirming, setIsResetConfirming] = useState(false);
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
   const [lastUpdated] = useState<string>(() => {
@@ -94,6 +116,8 @@ export default function App() {
     
     setCurrentRankId(0);
     setIsHistoryExpanded(false);
+    setIsSpentExpanded(true);
+    setIsRemainingExpanded(true);
     setIsResetConfirming(false);
   };
   
@@ -160,6 +184,10 @@ export default function App() {
 
   useEffect(() => {
     localStorage.setItem('hades-rank-id', currentRankId.toString());
+    localStorage.setItem('hades-sidebar-collapsed', isSidebarCollapsed.toString());
+    localStorage.setItem('hades-history-expanded', isHistoryExpanded.toString());
+    localStorage.setItem('hades-spent-expanded', isSpentExpanded.toString());
+    localStorage.setItem('hades-remaining-expanded', isRemainingExpanded.toString());
     
     // Sync to URL
     const url = new URL(window.location.href);
@@ -179,7 +207,7 @@ export default function App() {
     }
     
     window.history.replaceState({}, '', url);
-  }, [currentRankId, searchQuery]);
+  }, [currentRankId, searchQuery, isSidebarCollapsed, isHistoryExpanded, isSpentExpanded, isRemainingExpanded]);
 
   const filteredRanks = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -199,11 +227,15 @@ export default function App() {
     RANKS.filter(r => r.id < currentRankId).length,
   [currentRankId]);
 
+  const isInitialMount = useRef(true);
+
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
     if (searchQuery && completedRanks.length > 0) {
       setIsHistoryExpanded(true);
-    } else if (!searchQuery) {
-      setIsHistoryExpanded(false);
     }
   }, [searchQuery, completedRanks.length]);
 
