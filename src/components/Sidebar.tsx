@@ -14,6 +14,7 @@ interface SidebarProps {
   spentKudos: number;
   progressPercentage: number;
   remainingResources: { name: string; amount: number }[];
+  spentResources: { name: string; amount: number }[];
   isSidebarCollapsed: boolean;
   setIsSidebarCollapsed: (collapsed: boolean) => void;
   isSpentExpanded: boolean;
@@ -31,6 +32,7 @@ export const Sidebar = ({
   spentKudos,
   progressPercentage,
   remainingResources,
+  spentResources,
   isSidebarCollapsed,
   setIsSidebarCollapsed,
   isSpentExpanded,
@@ -112,7 +114,7 @@ export const Sidebar = ({
                     </div>
                   </button>
 
-                  <div className={`px-4 transition-all ${isSpentExpanded ? 'pt-2 pb-5' : (spentKudos > 0 || currentRank.cumulativeResources.length > 0 ? 'pt-2 pb-4' : 'p-0 h-0')}`}>
+                  <div className={`px-4 transition-all ${isSpentExpanded ? 'pt-2 pb-5' : (spentKudos > 0 || spentResources.length > 0 ? 'pt-2 pb-4' : 'p-0 h-0')}`}>
                     {spentKudos > 0 && (
                       <div className={`flex items-start gap-3 transition-all ${isSpentExpanded ? 'mb-5' : 'mb-0'}`}>
                         <div className="w-[34px] h-[34px] rounded-lg bg-hades-border flex items-center justify-center border border-hades-border-light flex-shrink-0">
@@ -135,22 +137,17 @@ export const Sidebar = ({
                       className="overflow-hidden"
                     >
                       <div className="grid grid-cols-2 gap-y-4 gap-x-4 pt-4 border-t border-hades-border-light/50 w-full">
-                        {RESOURCE_NAMES.map((resName) => {
-                          const amount = currentRank.cumulativeResources.find(r => r.name === resName)?.amount || 0;
-                          if (amount === 0) return null;
-                          
-                          return (
-                            <div key={`spent-${resName}`} className="flex items-start gap-3 min-w-0">
-                              <div className="w-[32px] h-[32px] flex-shrink-0 rounded-lg bg-hades-border flex items-center justify-center border border-hades-border-light/30">
-                                <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-5 h-5 object-contain" loading="lazy" />
-                              </div>
-                              <div className="min-w-0 pt-0.5">
-                                <p className="text-sm text-hades-text/80 leading-none font-bold">{amount.toLocaleString()}</p>
-                                <p className="text-[9px] uppercase opacity-50 font-sans mt-1 leading-tight tracking-tight">{resName === 'Golden Apple' ? 'Gold Apple' : resName}</p>
-                              </div>
+                        {spentResources.map((resource) => (
+                          <div key={`spent-${resource.name}`} className="flex items-start gap-3 min-w-0">
+                            <div className="w-[32px] h-[32px] flex-shrink-0 rounded-lg bg-hades-border flex items-center justify-center border border-hades-border-light/30">
+                              <img src={`/assets/resources/${resource.name.replace(/\s+/g, '_')}.png`} alt="" className="w-5 h-5 object-contain" loading="lazy" />
                             </div>
-                          );
-                        })}
+                            <div className="min-w-0 pt-0.5">
+                              <p className="text-sm text-hades-text/80 leading-none font-bold">{resource.amount.toLocaleString()}</p>
+                              <p className="text-[9px] uppercase opacity-50 font-sans mt-1 leading-tight tracking-tight">{resource.name === 'Golden Apple' ? 'Gold Apple' : resource.name}</p>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </motion.div>
                   </div>
@@ -197,23 +194,17 @@ export const Sidebar = ({
                       className="overflow-hidden"
                     >
                       <div className="grid grid-cols-2 gap-y-4 gap-x-4 pt-4 border-t border-hades-border-light/50 w-full">
-                        {RESOURCE_NAMES.map((resName) => {
-                          const resource = remainingResources.find(r => r.name === resName);
-                          if (!resource) return null;
-                          const amount = resource.amount;
-                          
-                          return (
-                            <div key={`rem-${resName}`} className="flex items-start gap-3 min-w-0">
-                              <div className="w-[32px] h-[32px] flex-shrink-0 rounded-lg bg-hades-border flex items-center justify-center border border-hades-border-light/30">
-                                <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-5 h-5 object-contain" loading="lazy" />
-                              </div>
-                              <div className="min-w-0 pt-0.5">
-                                <p className="text-sm text-hades-text/80 leading-none font-bold">{amount.toLocaleString()}</p>
-                                <p className="text-[9px] uppercase opacity-50 font-sans mt-1 leading-tight tracking-tight">{resName === 'Golden Apple' ? 'Gold Apple' : resName}</p>
-                              </div>
+                        {remainingResources.map((resource) => (
+                          <div key={`rem-${resource.name}`} className="flex items-start gap-3 min-w-0">
+                            <div className="w-[32px] h-[32px] flex-shrink-0 rounded-lg bg-hades-border flex items-center justify-center border border-hades-border-light/30">
+                              <img src={`/assets/resources/${resource.name.replace(/\s+/g, '_')}.png`} alt="" className="w-5 h-5 object-contain" loading="lazy" />
                             </div>
-                          );
-                        })}
+                            <div className="min-w-0 pt-0.5">
+                              <p className="text-sm text-hades-text/80 leading-none font-bold">{resource.amount.toLocaleString()}</p>
+                              <p className="text-[9px] uppercase opacity-50 font-sans mt-1 leading-tight tracking-tight">{resource.name === 'Golden Apple' ? 'Gold Apple' : resource.name}</p>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </motion.div>
                   </div>

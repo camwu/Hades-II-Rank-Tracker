@@ -117,6 +117,12 @@ export default function App() {
     .sort((a, b) => RESOURCE_NAMES.indexOf(a.name) - RESOURCE_NAMES.indexOf(b.name));
   }, [currentRank]);
 
+  const spentResources = useMemo(() => {
+    return currentRank.cumulativeResources
+      .filter(r => r.amount > 0)
+      .sort((a, b) => RESOURCE_NAMES.indexOf(a.name) - RESOURCE_NAMES.indexOf(b.name));
+  }, [currentRank]);
+
   const progressPercentage = useMemo(() => 
     (currentRank.cumulativeKudos / TOTAL_KUDOS) * 100, 
   [currentRank]);
@@ -232,6 +238,7 @@ export default function App() {
             spentKudos={spentKudos}
             progressPercentage={progressPercentage}
             remainingResources={remainingResources}
+            spentResources={spentResources}
             isSidebarCollapsed={isSidebarCollapsed}
             setIsSidebarCollapsed={setIsSidebarCollapsed}
             isSpentExpanded={isSpentExpanded}
