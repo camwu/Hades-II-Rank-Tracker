@@ -1,5 +1,4 @@
 import { memo, useState } from 'react';
-import { History } from 'lucide-react';
 import { Rank, formatResourceName } from '../constants';
 
 const SHADOW_CLASSES: Record<string, string> = {

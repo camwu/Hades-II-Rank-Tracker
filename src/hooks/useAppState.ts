@@ -213,7 +213,6 @@ export function useAppState() {
 
   return {
     currentRankId,
-    setCurrentRankId,
     searchQuery,
     setSearchQuery,
     isSidebarCollapsed: sidebar.isSidebarCollapsed,

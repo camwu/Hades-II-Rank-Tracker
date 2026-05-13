@@ -6,7 +6,7 @@ import {
   ChevronLeft, 
   ChevronRight 
 } from 'lucide-react';
-import { Rank, RESOURCE_NAMES, formatResourceName } from '../constants';
+import { Rank, formatResourceName } from '../constants';
 
 interface SidebarProps {
   currentRank: Rank;
