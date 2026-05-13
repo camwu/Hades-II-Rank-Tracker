@@ -109,8 +109,7 @@ export default function App() {
                   <span className="sm:hidden">Kudos</span>
                 </div>
                 <div className="col-span-4 md:col-span-4 text-right">
-                  <span className="hidden sm:inline">Resource</span>
-                  <span className="sm:hidden">Resource</span>
+                  <span>Resource</span>
                 </div>
                 <span className="hidden md:block md:col-span-3 text-right">Progress</span>
               </div>
