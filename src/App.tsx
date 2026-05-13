@@ -195,6 +195,10 @@ export default function App() {
     filteredRanks.filter(r => r.id < currentRankId),
   [filteredRanks, currentRankId]);
 
+  const totalCompletedCount = useMemo(() => 
+    RANKS.filter(r => r.id < currentRankId).length,
+  [currentRankId]);
+
   useEffect(() => {
     if (searchQuery && completedRanks.length > 0) {
       setIsHistoryExpanded(true);
@@ -273,11 +277,11 @@ export default function App() {
             <div className="flex-1 flex flex-col w-full px-4 md:px-8 pb-6 md:pb-8 pt-4 overflow-hidden">
               <div className="grid grid-cols-[repeat(13,minmax(0,1fr))] gap-2 md:gap-4 mb-4 text-xs md:text-xs uppercase tracking-widest opacity-50 pl-1 pr-3 md:pl-9 md:pr-10 font-black py-2 bg-hades-bg-main sticky top-0 z-10 transition-all">
                 <span className="col-span-6 md:col-span-4">Rank</span>
-                <div className="col-span-3 md:col-span-3 text-right pr-3">
+                <div className="col-span-3 md:col-span-2 text-right pr-3">
                   <span className="hidden sm:inline">Kudos Cost</span>
                   <span className="sm:hidden">Kudos</span>
                 </div>
-                <div className="col-span-4 md:col-span-3 text-right">
+                <div className="col-span-4 md:col-span-4 text-right">
                   <span className="hidden sm:inline">Resource</span>
                   <span className="sm:hidden">Resource</span>
                 </div>
@@ -287,7 +291,7 @@ export default function App() {
             <div className="flex-1 overflow-y-auto border border-hades-border-light rounded-xl bg-hades-bg-light shadow-2xl">
             <div className="grid grid-cols-1 divide-y divide-hades-border-light">
               {/* Collapsible Completed Section - Pinned to top */}
-              {completedRanks.length > 0 && (
+              {totalCompletedCount > 0 && (
                 <div className="sticky top-0 bg-hades-bg-light border-b border-hades-border-light z-20">
                   <button 
                     onClick={() => setIsHistoryExpanded(!isHistoryExpanded)}
@@ -298,7 +302,7 @@ export default function App() {
                         <History className="w-3.5 h-3.5 md:w-4 md:h-4 text-hades-text opacity-30" />
                       </div>
                       <span className="text-xs uppercase tracking-wider text-hades-text opacity-40 font-bold">
-                        {completedRanks.length} Completed Ranks
+                        {totalCompletedCount} Completed Ranks
                       </span>
                     </div>
                     <motion.div
@@ -321,17 +325,23 @@ export default function App() {
                     className="overflow-y-auto overflow-x-hidden border-t border-hades-border-light/30 bg-hades-bg-dark/50 scroll-smooth"
                   >
                     <div className="divide-y divide-hades-border-light/30">
-                      {completedRanks.map((rank) => (
-                        <RankRow 
-                          key={rank.id}
-                          rank={rank}
-                          isCurrent={false}
-                          isCompleted={true}
-                          isHistoryExpanded={isHistoryExpanded}
-                          onClick={handleRankClick}
-                          totalKudos={TOTAL_KUDOS}
-                        />
-                      ))}
+                      {completedRanks.length > 0 ? (
+                        completedRanks.map((rank) => (
+                          <RankRow 
+                            key={rank.id}
+                            rank={rank}
+                            isCurrent={false}
+                            isCompleted={true}
+                            isHistoryExpanded={isHistoryExpanded}
+                            onClick={handleRankClick}
+                            totalKudos={TOTAL_KUDOS}
+                          />
+                        ))
+                      ) : (
+                        <div className="py-8 px-4 text-center opacity-30 text-xs italic">
+                          No completed ranks match your search
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 </div>

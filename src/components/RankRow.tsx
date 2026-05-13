@@ -54,7 +54,7 @@ export const RankRow = memo(({
           </div>
           <span className="text-xs md:text-base font-medium">{rank.name}</span>
         </div>
-        <div className="col-span-3 md:col-span-3 flex items-center justify-end gap-1 md:gap-2 opacity-80 pr-3">
+        <div className="col-span-3 md:col-span-2 flex items-center justify-end gap-1 md:gap-2 opacity-80 pr-3">
           {rank.id > 0 ? (
             <>
               <span className="text-[10px] md:text-sm leading-none">{rank.kudos.toLocaleString()}</span>
@@ -64,11 +64,11 @@ export const RankRow = memo(({
             <span className="text-sm opacity-30">—</span>
           )}
         </div>
-        <div className="col-span-4 md:col-span-3 flex items-center justify-end gap-1 md:gap-3 opacity-90 min-w-0">
+        <div className="col-span-4 md:col-span-4 flex items-center justify-end gap-1 md:gap-3 opacity-90 min-w-0">
           {rank.id > 0 ? (
             <>
-              <span className="text-[10px] md:text-sm leading-tight text-right truncate">
-                {rank.bossResourceQty}x <span className="hidden lg:inline">{rank.bossResourceName}</span>
+              <span className="text-[10px] md:text-sm leading-tight text-right whitespace-nowrap">
+                {rank.bossResourceQty}x <span className="hidden sm:inline">{rank.bossResourceName}</span>
               </span>
               <img src={rank.bossResourceImageUrl} alt="" className="w-4 h-4 md:w-5 md:h-5 object-contain flex-shrink-0" loading="lazy" />
             </>
@@ -112,7 +112,7 @@ export const RankRow = memo(({
         </div>
         <span className={`text-xs md:text-base ${isCurrent ? 'font-bold text-hades-accent' : 'font-medium'}`}>{rank.name}</span>
       </div>
-      <div className="col-span-3 md:col-span-3 flex items-center justify-end gap-1 md:gap-2 opacity-90 pr-3">
+      <div className="col-span-3 md:col-span-2 flex items-center justify-end gap-1 md:gap-2 opacity-90 pr-3">
         {rank.id > 0 ? (
           <>
             <span className="text-[11px] md:text-sm">{rank.kudos.toLocaleString()}</span>
@@ -122,11 +122,11 @@ export const RankRow = memo(({
           <span className="text-[10px] uppercase opacity-40 font-black tracking-widest">—</span>
         )}
       </div>
-      <div className="col-span-4 md:col-span-3 flex items-center justify-end gap-1 md:gap-3 opacity-90 min-w-0">
+      <div className="col-span-4 md:col-span-4 flex items-center justify-end gap-1 md:gap-3 opacity-90 min-w-0">
         {rank.id > 0 ? (
           <>
-            <span className="text-[11px] md:text-sm leading-tight group-hover:text-white transition-colors text-right truncate">
-              {rank.bossResourceQty}x <span className="hidden lg:inline">{rank.bossResourceName}</span>
+            <span className="text-[11px] md:text-sm leading-tight group-hover:text-white transition-colors text-right whitespace-nowrap">
+              {rank.bossResourceQty}x <span className="hidden sm:inline">{rank.bossResourceName}</span>
             </span>
             <img src={rank.bossResourceImageUrl} alt="" className={`${isCurrent ? 'w-5 h-5 md:w-6 md:h-6' : 'w-4 h-4 md:w-5 md:h-5'} object-contain flex-shrink-0`} loading="lazy" />
           </>
