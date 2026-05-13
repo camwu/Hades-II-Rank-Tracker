@@ -126,15 +126,17 @@ const RAW_DATA = [
 
 function toRoman(num: number): string {
   if (num === 0) return "";
-  const lookup: [string, number][] = [
-    ["X", 10],
-    ["IX", 9],
-    ["V", 5],
-    ["IV", 4],
-    ["I", 1]
-  ];
+  const lookup: Record<string, number> = {
+    X: 10,
+    IX: 9,
+    V: 5,
+    IV: 4,
+    I: 1
+  };
   let roman = "";
-  for (const [symbol, value] of lookup) {
+  const symbols = Object.keys(lookup);
+  for (const symbol of symbols) {
+    const value = lookup[symbol];
     while (num >= value) {
       roman += symbol;
       num -= value;
