@@ -35,7 +35,13 @@ export default function App() {
     }
     return 0;
   });
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('q') || '';
+    }
+    return '';
+  });
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileStatsOpen, setIsMobileStatsOpen] = useState(false);
   const [isHistoryExpanded, setIsHistoryExpanded] = useState(false);
@@ -157,13 +163,23 @@ export default function App() {
     
     // Sync to URL
     const url = new URL(window.location.href);
+    
+    // Rank
     if (currentRankId === 0) {
       url.searchParams.delete('rank');
     } else {
       url.searchParams.set('rank', currentRankId.toString());
     }
+
+    // Search Query
+    if (!searchQuery.trim()) {
+      url.searchParams.delete('q');
+    } else {
+      url.searchParams.set('q', searchQuery.trim());
+    }
+    
     window.history.replaceState({}, '', url);
-  }, [currentRankId]);
+  }, [currentRankId, searchQuery]);
 
   const filteredRanks = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
