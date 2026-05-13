@@ -76,10 +76,7 @@ export const Header = ({
               )}
               <span className="whitespace-nowrap">
                 {isResetConfirming ? (
-                  <>
-                    <span className="hidden sm:inline">Confirm Reset</span>
-                    <span className="sm:hidden">Confirm Reset</span>
-                  </>
+                  "Confirm Reset"
                 ) : (
                   <>
                     <span className="hidden sm:inline">Reset Progress</span>
