@@ -205,6 +205,9 @@ export default function App() {
 
   return (
     <div id="app-root" className="h-screen bg-hades-bg text-hades-text font-sans overflow-hidden flex flex-col">
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {searchQuery && `${filteredRanks.length} rank${filteredRanks.length === 1 ? '' : 's'} found`}
+      </div>
       <Header 
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
