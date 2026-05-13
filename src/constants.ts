@@ -54,14 +54,6 @@ const LEVEL_RESOURCES: Record<number, string> = {
   0: "None"
 };
 
-export const RESOURCE_ORDER = [
-  ["Kudos", null],
-  ["Feather", "Cinder"],
-  ["Golden Apple", "Tears"],
-  ["Pearl", "Nightmare"],
-  ["Wool", "Void Lens"],
-  ["Moon Dust", "Zodiac Sand"]
-];
 
 const GROUP_QUANTITY: Record<string, number> = {
   "Wraith": 1,
