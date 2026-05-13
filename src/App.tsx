@@ -51,9 +51,18 @@ export default function App() {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
+    let timeoutId: ReturnType<typeof setTimeout>;
+    const handleResize = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        setWindowWidth(window.innerWidth);
+      }, 150);
+    };
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   const isMobile = windowWidth < 1024;
