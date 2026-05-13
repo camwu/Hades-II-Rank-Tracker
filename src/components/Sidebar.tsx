@@ -6,7 +6,7 @@ import {
   ChevronLeft, 
   ChevronRight 
 } from 'lucide-react';
-import { Rank, RESOURCE_NAMES } from '../constants';
+import { Rank, RESOURCE_NAMES, formatResourceName } from '../constants';
 
 interface SidebarProps {
   currentRank: Rank;
@@ -144,7 +144,7 @@ export const Sidebar = ({
                             </div>
                             <div className="min-w-0 pt-0.5">
                               <p className="text-sm text-hades-text/80 leading-none font-bold">{resource.amount.toLocaleString()}</p>
-                              <p className="text-[9px] uppercase opacity-50 font-sans mt-1 leading-tight tracking-tight">{resource.name === 'Golden Apple' ? 'Gold Apple' : resource.name}</p>
+                              <p className="text-[9px] uppercase opacity-50 font-sans mt-1 leading-tight tracking-tight">{formatResourceName(resource.name)}</p>
                             </div>
                           </div>
                         ))}
@@ -201,7 +201,7 @@ export const Sidebar = ({
                             </div>
                             <div className="min-w-0 pt-0.5">
                               <p className="text-sm text-hades-text/80 leading-none font-bold">{resource.amount.toLocaleString()}</p>
-                              <p className="text-[9px] uppercase opacity-50 font-sans mt-1 leading-tight tracking-tight">{resource.name === 'Golden Apple' ? 'Gold Apple' : resource.name}</p>
+                              <p className="text-[9px] uppercase opacity-50 font-sans mt-1 leading-tight tracking-tight">{formatResourceName(resource.name)}</p>
                             </div>
                           </div>
                         ))}

@@ -1,6 +1,6 @@
 import { memo, useState } from 'react';
 import { History } from 'lucide-react';
-import { Rank } from '../constants';
+import { Rank, formatResourceName } from '../constants';
 
 const SHADOW_CLASSES: Record<string, string> = {
   "Unranked": "drop-shadow-hades-slate",
@@ -68,7 +68,7 @@ export const RankRow = memo(({
           {rank.id > 0 ? (
             <>
               <span className="text-[10px] md:text-sm leading-tight text-right whitespace-nowrap">
-                {rank.bossResourceQty}x <span className="hidden sm:inline">{rank.bossResourceName}</span>
+                {rank.bossResourceQty}x <span className="hidden sm:inline">{formatResourceName(rank.bossResourceName)}</span>
               </span>
               <img src={rank.bossResourceImageUrl} alt="" className="w-4 h-4 md:w-5 md:h-5 object-contain flex-shrink-0" loading="lazy" />
             </>
@@ -126,7 +126,7 @@ export const RankRow = memo(({
         {rank.id > 0 ? (
           <>
             <span className="text-[11px] md:text-sm leading-tight group-hover:text-white transition-colors text-right whitespace-nowrap">
-              {rank.bossResourceQty}x <span className="hidden sm:inline">{rank.bossResourceName}</span>
+              {rank.bossResourceQty}x <span className="hidden sm:inline">{formatResourceName(rank.bossResourceName)}</span>
             </span>
             <img src={rank.bossResourceImageUrl} alt="" className={`${isCurrent ? 'w-5 h-5 md:w-6 md:h-6' : 'w-4 h-4 md:w-5 md:h-5'} object-contain flex-shrink-0`} loading="lazy" />
           </>

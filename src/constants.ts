@@ -143,6 +143,11 @@ function toRoman(num: number): string {
   return roman;
 }
 
+export function formatResourceName(name: string): string {
+  if (name === 'Golden Apple') return 'Gold Apple';
+  return name;
+}
+
 function processRanks(): Rank[] {
   let cumulativeKudos = 0;
   const resourceTotals: Record<string, number> = {};
