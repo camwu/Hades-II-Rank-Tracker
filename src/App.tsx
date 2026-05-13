@@ -86,7 +86,6 @@ export default function App() {
       return;
     }
     
-    localStorage.removeItem('hades-rank-id');
     setCurrentRankId(0);
     setIsHistoryExpanded(false);
     setIsResetConfirming(false);
