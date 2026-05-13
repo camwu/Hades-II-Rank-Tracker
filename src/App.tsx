@@ -43,7 +43,10 @@ export default function App() {
   const [isRemainingExpanded, setIsRemainingExpanded] = useState(true);
   const [isResetConfirming, setIsResetConfirming] = useState(false);
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
-  const [lastUpdated, setLastUpdated] = useState<string>('');
+  const [lastUpdated] = useState<string>(() => {
+    // Use the build-time constant provided by Vite
+    return (import.meta.env.VITE_LAST_UPDATED as string) || '';
+  });
   const historyContainerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -85,32 +88,6 @@ export default function App() {
       return () => clearTimeout(timeoutId);
     }
   }, [isHistoryExpanded, currentRankId]);
-
-  useEffect(() => {
-    // 1. Check if we already fetched it this session
-    const cachedDate = sessionStorage.getItem('hades-last-updated');
-    if (cachedDate) {
-      setLastUpdated(cachedDate);
-      return;
-    }
-
-    // 2. If not, fetch it and save it
-    fetch('https://api.github.com/repos/camwu/hades-2-rank-tracker/commits/main')
-      .then(res => res.json())
-      .then(data => {
-        if (data.commit?.committer?.date) {
-          const date = new Date(data.commit.committer.date);
-          const formatted = date.toLocaleDateString(undefined, { 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-          });
-          sessionStorage.setItem('hades-last-updated', formatted);
-          setLastUpdated(formatted);
-        }
-      })
-      .catch(() => {});
-  }, []);
 
   const currentRank = useMemo(() => 
     RANKS.find((r) => r.id === currentRankId) || RANKS[0], 
