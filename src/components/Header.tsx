@@ -92,7 +92,7 @@ export const Header = ({
               ref={searchInputRef}
               id="search-input"
               type="text" 
-              placeholder={shouldCollapseSearch ? "" : "Search..."} 
+              placeholder={shouldCollapseSearch ? "" : (windowWidth < 768 ? "Search..." : "Press / to search")} 
               aria-label="Search ranks"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}

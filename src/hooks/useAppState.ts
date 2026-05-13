@@ -251,6 +251,21 @@ export function useAppState() {
     }
   }, [searchQuery, completedRanks.length]);
 
+  // --- Keyboard Shortcut ---
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Check if key is '/' and user is not already typing in an input or textarea
+      if (e.key === '/' && 
+          document.activeElement?.tagName !== 'INPUT' && 
+          document.activeElement?.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return {
     currentRankId,
     setCurrentRankId,
