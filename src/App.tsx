@@ -193,6 +193,8 @@ export default function App() {
         handleResetProgress={handleResetProgress}
         setIsMobileStatsOpen={setIsMobileStatsOpen}
         searchInputRef={searchInputRef}
+        isMobile={isMobile}
+        windowWidth={windowWidth}
       />
 
       <div className="flex flex-1 overflow-hidden justify-center bg-hades-bg">

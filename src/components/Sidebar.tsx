@@ -61,6 +61,7 @@ export const Sidebar = ({
         <button 
           onClick={() => setIsMobileStatsOpen(false)}
           className="p-1 hover:bg-hades-border-light rounded-full transition-colors text-hades-text/50"
+          aria-label="Close statistics"
         >
           <X className="w-5 h-5" />
         </button>
@@ -71,6 +72,7 @@ export const Sidebar = ({
         onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         className="absolute -right-3 top-[21px] z-30 hidden lg:flex items-center justify-center w-6 h-6 bg-hades-bg-dark border border-hades-border rounded-md shadow-lg hover:border-hades-accent/50 transition-all text-hades-accent/60 hover:text-hades-accent outline-none focus-visible:ring-2 focus-visible:ring-hades-accent focus-visible:border-hades-accent"
         title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+        aria-label={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
       >
         {isSidebarCollapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
       </button>
