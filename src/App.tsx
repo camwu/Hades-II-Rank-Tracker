@@ -9,7 +9,7 @@ import {
   ChevronRight,
   History
 } from 'lucide-react';
-import { RANKS, TOTAL_KUDOS, TOTAL_RESOURCES, Rank } from './constants';
+import { RANKS, TOTAL_KUDOS, TOTAL_RESOURCES, Rank, RESOURCE_NAMES } from './constants';
 import { RankRow } from './components/RankRow';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
@@ -94,13 +94,12 @@ export default function App() {
   [currentRankId]);
 
   const remainingResources = useMemo(() => {
-    const order = ['Feather', 'Golden Apple', 'Pearl', 'Wool', 'Moon Dust', 'Cinder', 'Tears', 'Nightmare', 'Void Lens', 'Zodiac Sand'];
     return TOTAL_RESOURCES.map(total => {
       const spent = currentRank.cumulativeResources.find(s => s.name === total.name)?.amount || 0;
       return { name: total.name, amount: total.amount - spent };
     })
     .filter(r => r.amount > 0)
-    .sort((a, b) => order.indexOf(a.name) - order.indexOf(b.name));
+    .sort((a, b) => RESOURCE_NAMES.indexOf(a.name) - RESOURCE_NAMES.indexOf(b.name));
   }, [currentRank]);
 
   const progressPercentage = useMemo(() => 

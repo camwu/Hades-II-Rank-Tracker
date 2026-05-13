@@ -6,7 +6,7 @@ import {
   ChevronLeft, 
   ChevronRight 
 } from 'lucide-react';
-import { Rank } from '../constants';
+import { Rank, RESOURCE_NAMES } from '../constants';
 
 interface SidebarProps {
   currentRank: Rank;
@@ -132,7 +132,7 @@ export const Sidebar = ({
                       className="overflow-hidden"
                     >
                       <div className="grid grid-cols-2 gap-y-4 gap-x-4 pt-4 border-t border-hades-border-light/50 w-full">
-                        {['Feather', 'Golden Apple', 'Pearl', 'Wool', 'Moon Dust', 'Cinder', 'Tears', 'Nightmare', 'Void Lens', 'Zodiac Sand'].map((resName) => {
+                        {RESOURCE_NAMES.map((resName) => {
                           const amount = currentRank.cumulativeResources.find(r => r.name === resName)?.amount || 0;
                           if (amount === 0) return null;
                           
@@ -191,7 +191,7 @@ export const Sidebar = ({
                       className="overflow-hidden"
                     >
                       <div className="grid grid-cols-2 gap-y-4 gap-x-4 pt-4 border-t border-hades-border-light/50 w-full">
-                        {['Feather', 'Golden Apple', 'Pearl', 'Wool', 'Moon Dust', 'Cinder', 'Tears', 'Nightmare', 'Void Lens', 'Zodiac Sand'].map((resName) => {
+                        {RESOURCE_NAMES.map((resName) => {
                           const resource = remainingResources.find(r => r.name === resName);
                           if (!resource) return null;
                           const amount = resource.amount;

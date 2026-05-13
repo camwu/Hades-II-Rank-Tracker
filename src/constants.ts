@@ -19,6 +19,19 @@ export interface Rank {
   imageUrl: string;
 }
 
+export const RESOURCE_NAMES = [
+  'Feather', 
+  'Golden Apple', 
+  'Pearl', 
+  'Wool', 
+  'Moon Dust', 
+  'Cinder', 
+  'Tears', 
+  'Nightmare', 
+  'Void Lens', 
+  'Zodiac Sand'
+];
+
 export const RANK_COLORS: Record<string, string> = {
   "Unranked": "#334155",  // Slate
   "Wraith": "#64748b",   // Grey
