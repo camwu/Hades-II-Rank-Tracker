@@ -2,6 +2,15 @@ import { memo, useState } from 'react';
 import { History } from 'lucide-react';
 import { Rank } from '../constants';
 
+const SHADOW_CLASSES: Record<string, string> = {
+  "Unranked": "drop-shadow-hades-slate",
+  "Wraith": "drop-shadow-hades-grey",
+  "Specter": "drop-shadow-hades-bronze",
+  "Revenant": "drop-shadow-hades-white",
+  "Nightmare": "drop-shadow-hades-purple",
+  "Unseen": "drop-shadow-hades-gold",
+};
+
 interface RankRowProps {
   rank: Rank;
   isCurrent: boolean;
@@ -37,9 +46,8 @@ export const RankRow = memo(({
               <img 
                 src={rank.imageUrl} 
                 alt="" 
-                className="w-full h-full object-contain z-10"
+                className={`w-full h-full object-contain z-10 ${rank.id > 0 ? SHADOW_CLASSES[rank.colorName] : ''}`}
                 loading="lazy"
-                style={{ filter: rank.id > 0 ? `drop-shadow(0 0 10px ${rank.colorHex}33)` : 'none' }}
                 onError={() => setImgError(true)}
               />
             )}
@@ -96,9 +104,8 @@ export const RankRow = memo(({
             <img 
               src={rank.imageUrl} 
               alt="" 
-              className="w-full h-full object-contain relative z-10 transition-transform group-hover:scale-110"
+              className={`w-full h-full object-contain relative z-10 transition-transform group-hover:scale-110 ${rank.id > 0 ? SHADOW_CLASSES[rank.colorName] : ''}`}
               loading="lazy"
-              style={{ filter: rank.id > 0 ? `drop-shadow(0 0 10px ${rank.colorHex}33)` : 'none' }}
               onError={() => setImgError(true)}
             />
           )}
