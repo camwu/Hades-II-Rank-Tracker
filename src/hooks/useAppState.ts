@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { RANKS, TOTAL_KUDOS, TOTAL_RESOURCES, RESOURCE_NAMES } from '../constants';
+import { RANKS, TOTAL_KUDOS, TOTAL_RESOURCES, RESOURCE_NAMES, formatResourceName } from '../constants';
 import { useLocalStorageState } from './useLocalStorageState';
 import { useSidebarState } from './useSidebarState';
 
@@ -115,11 +115,14 @@ export function useAppState() {
   const filteredRanks = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
     if (!query) return RANKS;
-    return RANKS.filter((r) => 
-      r.name.toLowerCase().includes(query) ||
-      r.colorName.toLowerCase().includes(query) ||
-      r.bossResourceName.toLowerCase().includes(query)
-    );
+    return RANKS.filter((r) => {
+      const nameMatch = r.name.toLowerCase().includes(query);
+      const colorMatch = r.colorName.toLowerCase().includes(query);
+      const resourceMatch = r.bossResourceName.toLowerCase().includes(query);
+      const formattedResourceMatch = formatResourceName(r.bossResourceName).toLowerCase().includes(query);
+      
+      return nameMatch || colorMatch || resourceMatch || formattedResourceMatch;
+    });
   }, [searchQuery]);
 
   const completedRanks = useMemo(() => 
