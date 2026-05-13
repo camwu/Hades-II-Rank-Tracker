@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { History } from 'lucide-react';
 import { Rank } from '../constants';
 
@@ -19,6 +19,7 @@ export const RankRow = memo(({
   onClick, 
   totalKudos
 }: RankRowProps) => {
+  const [imgError, setImgError] = useState(false);
   const progress = (rank.cumulativeKudos / totalKudos) * 100;
 
   if (isCompleted) {
@@ -32,14 +33,16 @@ export const RankRow = memo(({
       >
         <div className="col-span-6 md:col-span-4 flex items-center gap-2 md:gap-4">
           <div className="relative w-8 h-8 md:w-11 md:h-11 flex flex-shrink-0 items-center justify-center">
-            <img 
-              src={rank.imageUrl} 
-              alt="" 
-              className="w-full h-full object-contain z-10"
-              loading="lazy"
-              style={{ filter: rank.id > 0 ? `drop-shadow(0 0 10px ${rank.colorHex}33)` : 'none' }}
-              onError={(e) => (e.currentTarget.style.display = 'none')}
-            />
+            {!imgError && (
+              <img 
+                src={rank.imageUrl} 
+                alt="" 
+                className="w-full h-full object-contain z-10"
+                loading="lazy"
+                style={{ filter: rank.id > 0 ? `drop-shadow(0 0 10px ${rank.colorHex}33)` : 'none' }}
+                onError={() => setImgError(true)}
+              />
+            )}
           </div>
           <span className="text-xs md:text-base font-medium">{rank.name}</span>
         </div>
@@ -89,14 +92,16 @@ export const RankRow = memo(({
     >
       <div className="col-span-6 md:col-span-4 flex items-center gap-2 md:gap-4">
         <div className="relative w-8 h-8 md:w-12 md:h-12 flex-shrink-0 flex items-center justify-center">
-          <img 
-            src={rank.imageUrl} 
-            alt="" 
-            className="w-full h-full object-contain relative z-10 transition-transform group-hover:scale-110"
-            loading="lazy"
-            style={{ filter: rank.id > 0 ? `drop-shadow(0 0 10px ${rank.colorHex}33)` : 'none' }}
-            onError={(e) => (e.currentTarget.style.display = 'none')}
-          />
+          {!imgError && (
+            <img 
+              src={rank.imageUrl} 
+              alt="" 
+              className="w-full h-full object-contain relative z-10 transition-transform group-hover:scale-110"
+              loading="lazy"
+              style={{ filter: rank.id > 0 ? `drop-shadow(0 0 10px ${rank.colorHex}33)` : 'none' }}
+              onError={() => setImgError(true)}
+            />
+          )}
         </div>
         <span className={`text-xs md:text-base ${isCurrent ? 'font-bold text-hades-accent' : 'font-medium'}`}>{rank.name}</span>
       </div>
