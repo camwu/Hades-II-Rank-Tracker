@@ -137,11 +137,13 @@ export function useAppState() {
     RANKS.filter(r => r.id < currentRankId).length,
   [currentRankId]);
 
+  const { setIsMobileStatsOpen, setIsSpentExpanded, setIsRemainingExpanded } = sidebar;
+
   // --- Handlers ---
   const handleRankClick = useCallback((id: number) => {
     setCurrentRankId(id);
-    if (isMobile) sidebar.setIsMobileStatsOpen(false);
-  }, [isMobile, sidebar]);
+    if (isMobile) setIsMobileStatsOpen(false);
+  }, [isMobile, setIsMobileStatsOpen]);
 
   const handleResetProgress = useCallback(() => {
     if (!isResetConfirming) {
@@ -152,10 +154,10 @@ export function useAppState() {
     
     setCurrentRankId(0);
     setIsHistoryExpanded(false);
-    sidebar.setIsSpentExpanded(true);
-    sidebar.setIsRemainingExpanded(true);
+    setIsSpentExpanded(true);
+    setIsRemainingExpanded(true);
     setIsResetConfirming(false);
-  }, [isResetConfirming, sidebar, setIsHistoryExpanded]);
+  }, [isResetConfirming, setIsHistoryExpanded, setIsSpentExpanded, setIsRemainingExpanded]);
 
   // --- Effects ---
   
