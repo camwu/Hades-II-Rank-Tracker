@@ -97,6 +97,8 @@ export const Sidebar = ({
                 <div className="bg-hades-panel rounded-lg border border-hades-border-light relative overflow-hidden group">
                   <button 
                     onClick={() => setIsSpentExpanded(!isSpentExpanded)}
+                    aria-expanded={isSpentExpanded}
+                    aria-controls="spent-resources-content"
                     className="w-full flex items-center justify-between px-4 py-3 hover:bg-hades-border-light/30 transition-colors group/header outline-none focus-visible:bg-hades-border-light/50 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-hades-accent/40"
                   >
                     <div className="flex items-center gap-2">
@@ -124,6 +126,7 @@ export const Sidebar = ({
                     )}
 
                     <motion.div
+                      id="spent-resources-content"
                       initial={false}
                       animate={{
                         height: isSpentExpanded ? 'auto' : 0,
@@ -156,6 +159,8 @@ export const Sidebar = ({
                 <div className="bg-hades-panel rounded-lg border border-hades-border-light relative overflow-hidden group">
                   <button 
                     onClick={() => setIsRemainingExpanded(!isRemainingExpanded)}
+                    aria-expanded={isRemainingExpanded}
+                    aria-controls="remaining-resources-content"
                     className="w-full flex items-center justify-between px-4 py-3 hover:bg-hades-border-light/30 transition-colors group/header outline-none focus-visible:bg-hades-border-light/50 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-hades-accent/40"
                   >
                     <div className="flex items-center gap-2">
@@ -183,6 +188,7 @@ export const Sidebar = ({
                     )}
 
                     <motion.div
+                      id="remaining-resources-content"
                       initial={false}
                       animate={{
                         height: isRemainingExpanded ? 'auto' : 0,
