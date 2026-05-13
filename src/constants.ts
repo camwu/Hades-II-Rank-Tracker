@@ -10,7 +10,6 @@ export interface Rank {
   colorName: string;
   colorHex: string;
   kudos: number;
-  resources: ResourceCost[];
   bossResourceName: string;
   bossResourceQty: number;
   bossResourceImageUrl: string;
@@ -163,7 +162,6 @@ function processRanks(): Rank[] {
       colorName: item.group,
       colorHex: RANK_COLORS[item.group] || "#ffffff",
       kudos: item.cost,
-      resources: [],
       bossResourceName: resourceName,
       bossResourceQty: resourceQty,
       bossResourceImageUrl: `/assets/resources/${resourceName.replace(/\s+/g, '_')}.png`,
@@ -179,7 +177,6 @@ function processRanks(): Rank[] {
     colorName: "Unranked",
     colorHex: RANK_COLORS["Unranked"],
     kudos: 0,
-    resources: [],
     bossResourceName: "None",
     bossResourceQty: 0,
     bossResourceImageUrl: "/assets/resources/None.png",
