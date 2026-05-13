@@ -104,13 +104,13 @@ const RankRow = memo(({
       className={`
         grid grid-cols-[repeat(13,minmax(0,1fr))] gap-2 md:gap-4 transition-all cursor-pointer group items-center w-full text-left outline-none
         ${isCurrent 
-          ? 'bg-hades-border border-l-4 border-hades-accent text-white shadow-[inset_4px_0_15_rgba(16,185,129,0.1)] py-2.5 pl-1 pr-3 md:pl-9 md:pr-10 text-xs md:text-sm focus-visible:bg-hades-border/80' 
-          : 'bg-transparent py-1.5 md:py-2 pl-1 pr-3 md:pl-9 md:pr-10 text-xs md:text-sm text-hades-text/80 border-l-4 border-transparent hover:bg-hades-border/40 focus-visible:bg-hades-accent/5'}
+          ? 'bg-hades-border border-l-4 border-hades-accent text-white shadow-[inset_4px_0_15_rgba(16,185,129,0.1)] py-2.5 md:py-2 pl-1 pr-3 md:pl-9 md:pr-10 text-xs md:text-sm focus-visible:bg-hades-border/80' 
+          : 'bg-transparent py-1.5 md:py-1.5 pl-1 pr-3 md:pl-9 md:pr-10 text-xs md:text-sm text-hades-text/80 border-l-4 border-transparent hover:bg-hades-border/40 focus-visible:bg-hades-accent/5'}
         focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-hades-accent/40
       `}
     >
       <div className="col-span-6 md:col-span-4 flex items-center gap-2 md:gap-4">
-        <div className="relative w-8 h-8 md:w-11 md:h-11 flex-shrink-0 flex items-center justify-center p-1">
+        <div className="relative w-8 h-8 md:w-12 md:h-12 flex-shrink-0 flex items-center justify-center">
           <img 
             src={rank.imageUrl} 
             alt="" 
@@ -125,7 +125,7 @@ const RankRow = memo(({
       <div className="col-span-3 md:col-span-3 flex items-center justify-end gap-1 md:gap-2 opacity-90 pr-3">
         {rank.id > 0 ? (
           <>
-            <span className="font-bold text-[11px] md:text-sm">{rank.kudos.toLocaleString()}</span>
+            <span className="text-[11px] md:text-sm">{rank.kudos.toLocaleString()}</span>
             <img src="/assets/resources/Kudos.png" alt="" className="w-3.5 h-3.5 md:w-4 md:h-4 object-contain" />
           </>
         ) : (
@@ -522,7 +522,7 @@ export default function App() {
                                   <img src="/assets/resources/Kudos.png" alt="" className="w-5 h-5 object-contain" loading="lazy" />
                                 </div>
                                 <div className="min-w-0 pt-0.5">
-                                  <p className="text-base text-white leading-none font-bold tracking-tight">{spentKudos.toLocaleString()}</p>
+                                  <p className="text-base text-hades-text/80 leading-none font-bold tracking-tight">{spentKudos.toLocaleString()}</p>
                                   <p className="text-[10px] uppercase opacity-50 font-sans mt-1.5 tracking-wider">Kudos</p>
                                 </div>
                               </div>
@@ -547,7 +547,7 @@ export default function App() {
                                         <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-5 h-5 object-contain" loading="lazy" />
                                       </div>
                                       <div className="min-w-0 pt-0.5">
-                                        <p className="text-sm text-white leading-none font-bold">{amount.toLocaleString()}</p>
+                                        <p className="text-sm text-hades-text/80 leading-none font-bold">{amount.toLocaleString()}</p>
                                         <p className="text-[9px] uppercase opacity-50 font-sans mt-1 leading-tight tracking-tight">{resName === 'Golden Apple' ? 'Gold Apple' : resName}</p>
                                       </div>
                                     </div>
@@ -583,7 +583,7 @@ export default function App() {
                                   <img src="/assets/resources/Kudos.png" alt="" className="w-5 h-5 object-contain" loading="lazy" />
                                 </div>
                                 <div className="min-w-0 pt-0.5">
-                                  <p className="text-base text-white leading-none font-bold tracking-tight">{remainingKudos.toLocaleString()}</p>
+                                  <p className="text-base text-hades-text/80 leading-none font-bold tracking-tight">{remainingKudos.toLocaleString()}</p>
                                   <p className="text-[10px] uppercase opacity-50 font-sans mt-1.5 tracking-wider">Kudos</p>
                                 </div>
                               </div>
@@ -609,7 +609,7 @@ export default function App() {
                                         <img src={`/assets/resources/${resName.replace(/\s+/g, '_')}.png`} alt="" className="w-5 h-5 object-contain" loading="lazy" />
                                       </div>
                                       <div className="min-w-0 pt-0.5">
-                                        <p className="text-sm text-white leading-none font-bold">{amount.toLocaleString()}</p>
+                                        <p className="text-sm text-hades-text/80 leading-none font-bold">{amount.toLocaleString()}</p>
                                         <p className="text-[9px] uppercase opacity-50 font-sans mt-1 leading-tight tracking-tight">{resName === 'Golden Apple' ? 'Gold Apple' : resName}</p>
                                       </div>
                                     </div>
@@ -656,7 +656,7 @@ export default function App() {
                       <div className="w-8 h-8 md:w-11 md:h-11 flex-shrink-0 flex items-center justify-center">
                         <History className="w-3.5 h-3.5 md:w-4 md:h-4 text-hades-text opacity-30" />
                       </div>
-                      <span className="text-[10px] uppercase tracking-[0.2em] text-hades-text opacity-40 font-black">
+                      <span className="text-xs uppercase tracking-wider text-hades-text opacity-40 font-bold">
                         {completedRanks.length} Completed Ranks
                       </span>
                     </div>
