@@ -79,8 +79,8 @@ export const Sidebar = ({
         {isSidebarCollapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
       </button>
 
-      <div className={`flex-1 flex flex-col gap-6 overflow-y-auto px-8 pb-8 pt-6 ${isSidebarCollapsed ? 'items-center overflow-x-hidden' : ''}`}>
-        {!isSidebarCollapsed ? (
+      <div className={`flex-1 flex flex-col gap-6 overflow-y-auto px-8 pb-8 pt-6 ${isSidebarCollapsed && !isMobile ? 'items-center overflow-x-hidden' : ''}`}>
+        {!isSidebarCollapsed || isMobile ? (
           <section>
             <div className="mb-2">
               <div className="flex justify-between items-baseline mb-2">
