@@ -53,3 +53,14 @@
     background: var(--color-hades-accent);
   }
 }
+
+/* Orientation Guard */
+.orientation-guard {
+  display: none;
+}
+
+@media screen and (orientation: landscape) and (max-height: 550px) {
+  .orientation-guard {
+    display: flex !important;
+  }
+}

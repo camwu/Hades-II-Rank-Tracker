@@ -13,6 +13,7 @@ import { RankRow } from './components/RankRow';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
+import { OrientationGuard } from './components/OrientationGuard';
 import { useAppState } from './hooks/useAppState';
 
 export default function App() {
@@ -52,6 +53,7 @@ export default function App() {
 
   return (
     <div id="app-root" className="h-screen bg-hades-bg text-hades-text font-sans overflow-hidden flex flex-col">
+      <OrientationGuard />
       <div className="sr-only" aria-live="polite" aria-atomic="true">
         {searchQuery && `${filteredRanks.length} rank${filteredRanks.length === 1 ? '' : 's'} found`}
       </div>
